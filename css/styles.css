@@ -547,14 +547,15 @@ a:hover { color: var(--rust-deep); }
 .page-idraulico .site-header .brand:hover { color: #fff; }
 .page-idraulico .nav-links a:hover { color: #f0c9a8; }
 
-/* Hero full-bleed — SVG come pezzo visibile (non watermark tagliato) */
+/* Hero full-bleed — SVG dietro titolo + CTA, con micro-animazione */
 .idra-hero {
   position: relative;
-  min-height: auto;
+  min-height: min(72vh, 620px);
   background: #0f1f18;
   color: #f3ede4;
   overflow: hidden;
-  display: block;
+  display: flex;
+  align-items: center;
 }
 
 .idra-hero::before {
@@ -568,7 +569,6 @@ a:hover { color: var(--rust-deep); }
   z-index: 0;
 }
 
-/* legacy absolute bg: nascosto — usiamo .idra-hero__visual */
 .idra-hero__bg {
   display: none !important;
 }
@@ -579,60 +579,70 @@ a:hover { color: var(--rust-deep); }
   width: 100%;
   max-width: 72rem;
   margin: 0 auto;
-  padding: 2rem 1.1rem 2.25rem;
-  display: grid;
-  gap: 1.5rem;
-  align-items: center;
+  padding: 2.5rem 1.1rem 2.75rem;
+  display: block;
+  min-height: inherit;
 }
 
 @media (min-width: 780px) {
+  .idra-hero {
+    min-height: min(82vh, 720px);
+  }
   .idra-hero__inner {
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
-    gap: 2rem 2.5rem;
-    padding: 3.25rem 1.25rem 3.5rem;
-    min-height: min(78vh, 680px);
+    padding: 3.5rem 1.25rem 3.75rem;
   }
 }
 
-.idra-hero__copy { min-width: 0; }
+.idra-hero__copy {
+  position: relative;
+  z-index: 2;
+  max-width: 28rem;
+}
 
 .idra-hero__visual {
-  position: relative;
-  justify-self: center;
-  width: min(78%, 280px);
-  margin: 0 auto;
-  opacity: .92;
+  position: absolute;
+  z-index: 0;
   pointer-events: none;
+  /* mobile: dietro il copy, leggibile ma non invade i CTA */
+  right: -12%;
+  bottom: 2%;
+  width: min(88vw, 340px);
+  opacity: .34;
+  animation: sos-hero-float 7s ease-in-out infinite;
+  will-change: transform;
 }
 
 .idra-hero__visual img {
   width: 100%;
   height: auto;
   display: block;
-  filter: drop-shadow(0 18px 40px rgba(0,0,0,.35));
+  filter: drop-shadow(0 16px 36px rgba(0, 0, 0, .4)) brightness(1.12);
 }
 
 @media (min-width: 780px) {
   .idra-hero__visual {
-    width: min(100%, 440px);
-    justify-self: end;
-    margin: 0;
-    transform: translateY(4%);
+    right: 2%;
+    bottom: 8%;
+    width: min(46vw, 480px);
+    opacity: .42;
   }
 }
 
-@media (max-width: 779px) {
-  /* mobile: SVG sotto i CTA, intera, niente crop */
-  .idra-hero__inner {
-    grid-template-rows: auto auto;
-  }
+@media (min-width: 1100px) {
   .idra-hero__visual {
-    order: 2;
-    width: min(70%, 240px);
-    opacity: .85;
-    margin-top: .25rem;
+    right: 4%;
+    width: min(42vw, 520px);
+    opacity: .46;
   }
-  .idra-hero__copy { order: 1; }
+}
+
+@keyframes sos-hero-float {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-1.5deg); }
+  50% { transform: translate3d(-6px, -14px, 0) rotate(1.5deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .idra-hero__visual { animation: none; }
 }
 
 .idra-wrap {
@@ -1837,18 +1847,37 @@ a:hover { color: var(--rust-deep); }
 .home-hero__logo {
   position: absolute;
   left: 50%;
-  top: 48%;
+  top: 46%;
   transform: translate(-50%, -50%);
-  width: min(72vw, 420px);
-  opacity: .14;
+  width: min(96vw, 520px);
+  opacity: .34;
   pointer-events: none;
   z-index: 0;
+  animation: sos-logo-breathe 5.5s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 
 .home-hero__logo img {
   width: 100%;
   height: auto;
   display: block;
+  filter: brightness(1.28) contrast(1.06);
+}
+
+@media (min-width: 720px) {
+  .home-hero__logo {
+    width: min(58vw, 440px);
+    opacity: .2;
+  }
+}
+
+@keyframes sos-logo-breathe {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); filter: brightness(1); }
+  50% { transform: translate(-50%, -52%) scale(1.04); filter: brightness(1.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero__logo { animation: none; }
 }
 
 .home-faq-band {
