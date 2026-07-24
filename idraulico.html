@@ -32,20 +32,19 @@
     .brand--logo img{display:block;height:52px;width:auto;max-width:190px}
     .nav-tel{font-weight:700;color:#f0c9a8;text-decoration:none;border-bottom:2px solid var(--rust);white-space:nowrap}
     .nav-links a{color:#d8e0da}
-    .idra-hero{position:relative;min-height:min(72vh,620px);background:#0f1f18;color:#f3ede4;overflow:hidden;display:flex;align-items:center}
-    .idra-hero__inner{position:relative;z-index:1;width:100%;max-width:72rem;margin:0 auto;padding:2.5rem 1.1rem 2.75rem}
-    .idra-hero__copy{position:relative;z-index:2;max-width:28rem}
+    .idra-hero{position:relative;min-height:min(78vh,640px);background:#0f1f18;color:#f3ede4;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center}
+    .idra-hero__visual{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);width:min(96vw,480px);opacity:.34;z-index:0;pointer-events:none}
+    .idra-hero__visual img{width:100%;height:auto;display:block;filter:brightness(1.15)}
+    .idra-hero__inner{position:relative;z-index:1;width:100%;max-width:44rem;margin:0 auto;padding:3rem 1.15rem 3.25rem}
+    .idra-hero__copy{position:relative;z-index:2;margin:0 auto;max-width:28rem;text-align:center}
     .idra-hero__eyebrow{display:inline-block;color:#e8a878;border-bottom:2px solid rgba(196,92,38,.7);padding-bottom:.2rem;margin:0 0 .85rem;font-size:.78rem;font-weight:600}
-    .idra-hero h1{font-family:var(--font-display);font-weight:700;font-size:clamp(2.2rem,8.5vw,4.1rem);line-height:.96;margin:0 0 1.25rem;max-width:11ch;color:#fff;letter-spacing:-.03em}
-    .idra-cta{display:flex;flex-wrap:wrap;gap:.65rem}
-    .idra-dial{display:inline-flex;flex-direction:column;text-decoration:none;background:var(--rust);color:#fff;padding:1rem 1.25rem 1.1rem;border-radius:2px}
+    .idra-hero h1{font-family:var(--font-display);font-weight:700;font-size:clamp(2.2rem,8.5vw,4.1rem);line-height:.96;margin:0 auto 1.35rem;max-width:12ch;color:#fff;letter-spacing:-.03em;text-align:center}
+    .idra-cta{display:flex;flex-wrap:wrap;gap:.65rem;justify-content:center}
+    .idra-dial{display:inline-flex;flex-direction:column;text-decoration:none;background:var(--rust);color:#fff;padding:1rem 1.25rem 1.1rem;border-radius:2px;text-align:left}
     .idra-dial strong{font-family:var(--font-display);font-size:clamp(1.65rem,5.5vw,2.3rem);line-height:1}
     .idra-dial small{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.9}
     .idra-wa-btn{display:inline-flex;align-items:center;justify-content:center;min-width:68px;padding:0 1rem;background:#25D366;border-radius:2px;text-decoration:none}
     .idra-wa-btn img{width:30px;height:30px;display:block}
-    .idra-hero__visual{position:absolute;right:-12%;bottom:2%;width:min(88vw,340px);opacity:.34;z-index:0;pointer-events:none}
-    .idra-hero__visual img{width:100%;height:auto;display:block;filter:brightness(1.12)}
-    @media(min-width:780px){.idra-hero{min-height:min(82vh,720px)}.idra-hero__visual{right:2%;bottom:8%;width:min(46vw,480px);opacity:.42}}
   </style>
   <link rel="stylesheet" href="css/styles.css">
 
@@ -160,11 +159,14 @@
   <main id="contenuto">
     <!-- HERO full-bleed: SVG pe fundal, copy scurt, CTA dominant -->
     <section class="idra-hero">
+      <div class="idra-hero__visual" aria-hidden="true">
+        <img src="img/idraulico.svg" width="420" height="360" alt="" fetchpriority="high" decoding="async">
+      </div>
       <div class="idra-hero__inner">
         <div class="idra-hero__copy">
           <span class="idra-hero__eyebrow">Idraulico · Pronto intervento</span>
           <h1>Perdita. Allagamento. Scarico bloccato.</h1>
-          <div class="idra-cta">
+          <div class="idra-cta idra-cta--center">
             <a class="idra-dial" href="tel:+393888091482">
               <small>Tocca e chiama ora</small>
               <strong>388 809 1482</strong>
@@ -173,9 +175,6 @@
               <img src="img/whatsapp.svg" width="32" height="32" alt="">
             </a>
           </div>
-        </div>
-        <div class="idra-hero__visual" aria-hidden="true">
-          <img src="img/idraulico.svg" width="420" height="360" alt="" fetchpriority="high" decoding="async">
         </div>
       </div>
     </section>
