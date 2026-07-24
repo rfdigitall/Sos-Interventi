@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>C — Notturno | Sos Interventi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --night: #0d1520;
+      --panel: #132033;
+      --text: #f0f2f5;
+      --orange: #ff6b1a;
+      --teal: #1a4a52;
+      --mute: #9aa8b5;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body {
+      font-family: "Nunito Sans", system-ui, sans-serif;
+      background:
+        linear-gradient(180deg, #0a1018 0%, var(--night) 40%, #101c2a 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .bar {
+      height: 4px;
+      background: linear-gradient(90deg, var(--orange), #ff9a4a 40%, var(--teal));
+    }
+    .wrap {
+      padding: clamp(1.25rem, 4vw, 2.5rem);
+      max-width: 44rem;
+      margin: 0 auto;
+      min-height: calc(100vh - 4px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1.1rem;
+    }
+    .brand {
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+    h1 {
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.4rem, 9vw, 3.8rem);
+      line-height: .95;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+      max-width: 12ch;
+    }
+    .sub {
+      color: var(--mute);
+      font-size: 1.05rem;
+      max-width: 32ch;
+    }
+    .tel {
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 800;
+      font-size: clamp(3rem, 14vw, 5.2rem);
+      line-height: 1;
+      color: var(--orange);
+      text-decoration: none;
+      letter-spacing: .02em;
+      text-shadow: 0 0 40px rgba(255,107,26,.25);
+    }
+    .tel:active { opacity: .9; }
+    .hint {
+      font-size: .85rem;
+      color: var(--mute);
+      margin-top: -.4rem;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .65rem;
+      margin-top: .4rem;
+    }
+    .actions a {
+      text-decoration: none;
+      font-weight: 700;
+      font-size: .95rem;
+      padding: .85rem 1.1rem;
+      border-radius: 2px;
+    }
+    .call {
+      background: var(--orange);
+      color: #140800;
+    }
+    .wa {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,.28);
+    }
+    .strip {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .strip span {
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      padding: .4rem .65rem;
+      background: var(--panel);
+      border-left: 2px solid var(--teal);
+      color: #c5d0da;
+    }
+  </style>
+</head>
+<body>
+  <div class="bar" aria-hidden="true"></div>
+  <main class="wrap">
+    <div class="brand">Sos Interventi · H24</div>
+    <h1>Pronto intervento fabbro e idraulico</h1>
+    <p class="sub">Emergenza adesso? Chiama. Ti raggiungiamo in zona.</p>
+    <a class="tel" href="tel:+393888091482">388 809 1482</a>
+    <p class="hint">Numero reale · stesso contatto WhatsApp</p>
+    <div class="actions">
+      <a class="call" href="tel:+393888091482">Chiama subito</a>
+      <a class="wa" href="https://wa.me/393888091482">WhatsApp</a>
+    </div>
+    <div class="strip">
+      <span>Porta bloccata</span>
+      <span>Perdita acqua</span>
+      <span>Scarico</span>
+      <span>Serratura</span>
+    </div>
+  </main>
+</body>
+</html>

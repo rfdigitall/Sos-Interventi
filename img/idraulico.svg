@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 360" width="420" height="360" role="img" aria-labelledby="idraTitle idraDesc">
+  <title id="idraTitle">Idraulico - valvola e goccia</title>
+  <desc id="idraDesc">Illustrazione di tubo, valvola e goccia d acqua, stile Sos Interventi</desc>
+  <defs>
+    <linearGradient id="ig" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4a7d68"/>
+      <stop offset="100%" stop-color="#2a5244"/>
+    </linearGradient>
+    <linearGradient id="iw" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#b7e4f0"/>
+      <stop offset="100%" stop-color="#5aa3b5"/>
+    </linearGradient>
+    <linearGradient id="ir" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef8a4a"/>
+      <stop offset="100%" stop-color="#c45c26"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="210" cy="322" rx="138" ry="14" fill="#f3ede4" opacity=".1"/>
+  <rect x="48" y="168" width="324" height="44" rx="10" fill="url(#ig)"/>
+  <rect x="48" y="176" width="324" height="8" rx="2" fill="#6f9a86" opacity=".6"/>
+  <rect x="110" y="156" width="22" height="68" rx="4" fill="#1a2e26"/>
+  <rect x="288" y="156" width="22" height="68" rx="4" fill="#1a2e26"/>
+  <rect x="178" y="148" width="64" height="84" rx="10" fill="url(#ir)"/>
+  <rect x="188" y="118" width="44" height="36" rx="6" fill="#ef8a4a"/>
+  <circle cx="210" cy="98" r="36" fill="none" stroke="#f0c9a8" stroke-width="10"/>
+  <circle cx="210" cy="98" r="10" fill="#f3ede4"/>
+  <line x1="210" y1="68" x2="210" y2="128" stroke="#f3ede4" stroke-width="6" stroke-linecap="round"/>
+  <line x1="180" y1="98" x2="240" y2="98" stroke="#f3ede4" stroke-width="6" stroke-linecap="round"/>
+  <path d="M318 248 C318 248 288 288 288 308 C288 328 304 340 318 340 C332 340 348 328 348 308 C348 288 318 248 318 248 Z" fill="url(#iw)"/>
+  <ellipse cx="308" cy="308" rx="6" ry="10" fill="#ffffff" opacity=".55"/>
+  <circle cx="318" cy="228" r="5" fill="#b7e4f0" opacity=".9"/>
+  <circle cx="318" cy="208" r="3.5" fill="#b7e4f0" opacity=".6"/>
+</svg>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 360" width="420" height="360" role="img" aria-labelledby="fabbroTitle fabbroDesc">
+  <title id="fabbroTitle">Fabbro - chiave e serratura</title>
+  <desc id="fabbroDesc">Illustrazione di una chiave e una serratura, stile Sos Interventi</desc>
+  <defs>
+    <linearGradient id="fg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3d6b58"/>
+      <stop offset="100%" stop-color="#2a5244"/>
+    </linearGradient>
+    <linearGradient id="fr" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ef8a4a"/>
+      <stop offset="100%" stop-color="#c45c26"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="210" cy="318" rx="138" ry="14" fill="#f3ede4" opacity=".1"/>
+  <rect x="118" y="128" width="128" height="148" rx="18" fill="url(#fg)"/>
+  <rect x="132" y="142" width="100" height="120" rx="12" fill="#4a7d68"/>
+  <path d="M148 128 V92 c0-34 24-58 62-58 s62 24 62 58 v36" fill="none" stroke="#f0c9a8" stroke-width="22" stroke-linecap="round"/>
+  <path d="M148 128 V92 c0-34 24-58 62-58 s62 24 62 58 v36" fill="none" stroke="#f3ede4" stroke-width="6" stroke-linecap="round" opacity=".4"/>
+  <circle cx="182" cy="198" r="18" fill="#f3ede4"/>
+  <rect x="174" y="208" width="16" height="36" rx="4" fill="#f3ede4"/>
+  <g transform="translate(248 188) rotate(-28)">
+    <circle cx="0" cy="0" r="28" fill="url(#fr)"/>
+    <circle cx="0" cy="0" r="12" fill="#f3ede4"/>
+    <rect x="24" y="-7" width="110" height="14" rx="4" fill="url(#fr)"/>
+    <rect x="98" y="7" width="12" height="18" rx="2" fill="#f0c9a8"/>
+    <rect x="118" y="7" width="12" height="26" rx="2" fill="#f0c9a8"/>
+  </g>
+  <circle cx="340" cy="78" r="6" fill="#f0c9a8"/>
+</svg>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>D — Ibrido | Sos Interventi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --night: #101418;
+      --surface: #181e24;
+      --text: #f2f0eb;
+      --mute: #a8b0b8;
+      --signal: #f0b400;
+      --signal-ink: #1a1400;
+      --line: #2a333c;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body {
+      font-family: "Source Sans 3", system-ui, sans-serif;
+      background: var(--night);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: .8rem 1rem;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+    }
+    .brand {
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 800;
+      font-size: 1.45rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .brand em {
+      font-style: normal;
+      color: var(--signal);
+    }
+    .top .mini {
+      color: var(--signal);
+      font-weight: 700;
+      text-decoration: none;
+      font-size: .95rem;
+      white-space: nowrap;
+    }
+    .hero {
+      padding: clamp(1.4rem, 4.5vw, 2.75rem) clamp(1rem, 4vw, 2rem);
+      max-width: 720px;
+    }
+    .tag {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--signal);
+      margin-bottom: .85rem;
+    }
+    h1 {
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.55rem, 9vw, 4rem);
+      line-height: .92;
+      text-transform: uppercase;
+      letter-spacing: .015em;
+      max-width: 14ch;
+      margin-bottom: .85rem;
+    }
+    .lead {
+      color: var(--mute);
+      font-size: 1.08rem;
+      max-width: 36ch;
+      margin-bottom: 1.35rem;
+    }
+    .dial {
+      display: block;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      background: var(--signal);
+      color: var(--signal-ink);
+      border: 0;
+      padding: 1.05rem 1rem 1.15rem;
+      border-radius: 4px;
+      box-shadow: 0 0 0 1px rgba(240,180,0,.3), 0 12px 40px rgba(240,180,0,.12);
+    }
+    .dial .num {
+      font-family: "Barlow Condensed", sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.4rem, 10vw, 3.4rem);
+      letter-spacing: .03em;
+      line-height: 1;
+      display: block;
+    }
+    .dial .cap {
+      display: block;
+      margin-top: .25rem;
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      opacity: .8;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem 1.25rem;
+      align-items: center;
+      margin-top: .9rem;
+      font-size: .92rem;
+      color: var(--mute);
+    }
+    .row a {
+      color: var(--text);
+      font-weight: 600;
+    }
+    .grid {
+      margin-top: 1.75rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+    @media (max-width: 480px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .grid div {
+      background: var(--surface);
+      padding: .9rem 1rem;
+    }
+    .grid strong {
+      display: block;
+      font-family: "Barlow Condensed", sans-serif;
+      font-size: 1.15rem;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: .2rem;
+      color: var(--signal);
+    }
+    .grid span {
+      font-size: .9rem;
+      color: var(--mute);
+    }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div class="brand">Sos <em>Interventi</em></div>
+    <a class="mini" href="tel:+393888091482">Chiama</a>
+  </div>
+  <main class="hero">
+    <span class="tag">Fabbro · Idraulico · Pronto intervento</span>
+    <h1>Emergenza in casa? Chiama. Arriviamo.</h1>
+    <p class="lead">Porta bloccata, perdita d’acqua, scarico ostruito. Un solo numero — risposta rapida nella tua zona.</p>
+    <a class="dial" href="tel:+393888091482">
+      <span class="num">388 809 1482</span>
+      <span class="cap">Tocca per chiamare</span>
+    </a>
+    <div class="row">
+      <span>Stesso numero su WhatsApp</span>
+      <a href="https://wa.me/393888091482">Apri chat</a>
+    </div>
+    <div class="grid">
+      <div>
+        <strong>Fabbro</strong>
+        <span>Serrature, porte, cilindri, chiavi rotte</span>
+      </div>
+      <div>
+        <strong>Idraulico</strong>
+        <span>Perdite, rubinetti, scarichi, wc</span>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A — Atelier | Sos Interventi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1a1a1a;
+      --steel: #5c6b73;
+      --signal: #e8b800;
+      --paper: #ede8e0;
+      --white: #f7f4ef;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body {
+      font-family: "Source Sans 3", system-ui, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .85rem 1.1rem;
+      background: var(--ink);
+      color: var(--white);
+    }
+    .brand {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 1.55rem;
+      letter-spacing: .04em;
+      line-height: 1;
+    }
+    .brand span { color: var(--signal); }
+    .top a {
+      color: var(--ink);
+      background: var(--signal);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: .85rem;
+      padding: .45rem .7rem;
+      border-radius: 2px;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      min-height: calc(100vh - 52px);
+    }
+    @media (max-width: 780px) {
+      .hero { grid-template-columns: 1fr; }
+    }
+    .copy {
+      padding: clamp(1.5rem, 4vw, 3rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1rem;
+      border-right: 3px solid var(--ink);
+    }
+    @media (max-width: 780px) {
+      .copy { border-right: 0; border-bottom: 3px solid var(--ink); }
+    }
+    .eyebrow {
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--steel);
+    }
+    h1 {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(2.8rem, 8vw, 4.6rem);
+      line-height: .92;
+      letter-spacing: .02em;
+      max-width: 10ch;
+    }
+    .lead {
+      font-size: 1.05rem;
+      max-width: 34ch;
+      color: #2a2a2a;
+    }
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: .65rem;
+      align-self: flex-start;
+      background: var(--signal);
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.15rem;
+      padding: .9rem 1.15rem;
+      border: 3px solid var(--ink);
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+    .cta small { display: block; font-size: .7rem; font-weight: 600; opacity: .75; }
+    .panel {
+      background: var(--ink);
+      color: var(--white);
+      padding: clamp(1.5rem, 4vw, 2.5rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1.1rem;
+    }
+    .panel h2 {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: .03em;
+      color: var(--signal);
+    }
+    .panel ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: .55rem;
+    }
+    .panel li {
+      padding: .65rem .75rem;
+      border-left: 3px solid var(--signal);
+      background: rgba(255,255,255,.05);
+      font-size: .95rem;
+    }
+    .wa {
+      color: var(--signal);
+      font-size: .9rem;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div class="brand">SOS <span>INTERVENTI</span></div>
+    <a href="tel:+393888091482">Chiama ora</a>
+  </div>
+  <div class="hero">
+    <div class="copy">
+      <p class="eyebrow">Fabbro · Idraulico · Pronto intervento</p>
+      <h1>Bloccato fuori? Tubo rotto? Interveniamo.</h1>
+      <p class="lead">Apri, sblocca, ripara. Risposta rapida nella tua zona — senza attese inutili.</p>
+      <a class="cta" href="tel:+393888091482">
+        <span>388 809 1482<small>Tocco e chiami · anche WhatsApp</small></span>
+      </a>
+    </div>
+    <aside class="panel">
+      <h2>Cosa risolviamo subito</h2>
+      <ul>
+        <li>Porta bloccata / chiave rotta</li>
+        <li>Perdita d’acqua / rubinetto</li>
+        <li>Scarico ostruito / wc</li>
+        <li>Cilindro / serratura urgente</li>
+      </ul>
+      <a class="wa" href="https://wa.me/393888091482">Preferisci WhatsApp? Scrivi qui</a>
+    </aside>
+  </div>
+</body>
+</html>

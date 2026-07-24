@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sos Interventi — Scelta direzione design</title>
+  <style>
+    :root { --ink: #121212; --paper: #f4f1ec; --line: #d4cfc6; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.45;
+    }
+    header {
+      padding: 1.25rem 1.5rem 1rem;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+    header h1 { margin: 0 0 .35rem; font-size: 1.25rem; letter-spacing: -.02em; }
+    header p { margin: 0; max-width: 52rem; font-size: .95rem; opacity: .85; }
+    .pick {
+      margin-top: .85rem;
+      padding: .75rem 1rem;
+      background: #1a1a1a;
+      color: #fff;
+      border-radius: 6px;
+      font-size: .9rem;
+    }
+    .pick strong { color: #ffb800; }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    nav a {
+      text-decoration: none;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      padding: .45rem .75rem;
+      border-radius: 999px;
+      font-size: .85rem;
+      background: #fafafa;
+    }
+    nav a:hover { background: #eee; }
+    nav a.rec { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    section {
+      padding: 1.25rem 1.5rem 2rem;
+      border-bottom: 1px solid var(--line);
+    }
+    section h2 { margin: 0 0 .35rem; font-size: 1.1rem; }
+    section .meta { margin: 0 0 1rem; font-size: .88rem; opacity: .8; max-width: 48rem; }
+    .frame-wrap {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 8px 28px rgba(0,0,0,.06);
+    }
+    .frame-wrap iframe {
+      display: block;
+      width: 100%;
+      height: min(78vh, 720px);
+      border: 0;
+    }
+    .hint { font-size: .8rem; margin-top: .6rem; opacity: .7; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Sos Interventi — preview direzioni (solo primo schermo)</h1>
+    <p>Apri ogni anteprima, confronta. Non è ancora il sito finale: solo mood + layout hero per scegliere. Testo in italiano, telefono reale.</p>
+    <p class="pick">Raccomandazione conversione: <strong>D — Ibrido Notturno + Semnale</strong> (telefono enorme, CTA impossibile da perdere, zero foto stock, LCP ottimo).</p>
+  </header>
+  <nav>
+    <a href="#a">A · Atelier</a>
+    <a href="#b">B · Vicino</a>
+    <a href="#c">C · Notturno</a>
+    <a class="rec" href="#d">D · Ibrido (consigliato)</a>
+    <a href="a-atelier.html" target="_blank">A full</a>
+    <a href="b-vicino.html" target="_blank">B full</a>
+    <a href="c-notturno.html" target="_blank">C full</a>
+    <a href="d-ibrido.html" target="_blank">D full</a>
+  </nav>
+
+  <section id="a">
+    <h2>A — Atelier di urgenza</h2>
+    <p class="meta">Giallo segnale + antracite. Densità da officina. Sensazione: “arrivano subito con gli attrezzi”.</p>
+    <div class="frame-wrap"><iframe src="a-atelier.html" title="Direzione A" loading="lazy"></iframe></div>
+    <p class="hint">Ridimensiona la finestra per vedere il mobile.</p>
+  </section>
+
+  <section id="b">
+    <h2>B — Vicino di fiducia</h2>
+    <p class="meta">Verde bosco + terracotta. Più caldo e “umano”. Sensazione: artigiano serio del quartiere.</p>
+    <div class="frame-wrap"><iframe src="b-vicino.html" title="Direzione B" loading="lazy"></iframe></div>
+  </section>
+
+  <section id="c">
+    <h2>C — Segnale notturno</h2>
+    <p class="meta">Notte + arancio. Telefono come elemento dominante. Ideale H24 e Ads notturni, senza foto.</p>
+    <div class="frame-wrap"><iframe src="c-notturno.html" title="Direzione C" loading="lazy"></iframe></div>
+  </section>
+
+  <section id="d">
+    <h2>D — Ibrido conversione (A densità + C notte + CTA segnale)</h2>
+    <p class="meta">Base scura H24, numero enorme, CTA giallo-arancio ad alto contrasto, copy diretto. Massima chiarezza “clicca e chiama”.</p>
+    <div class="frame-wrap"><iframe src="d-ibrido.html" title="Direzione D" loading="eager"></iframe></div>
+  </section>
+</body>
+</html>
