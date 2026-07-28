@@ -185,7 +185,6 @@
 
   function initBanner() {
     var choice = readChoice();
-    loadGtag();
 
     if (choice === "granted") {
       applyConsent(true);
@@ -280,6 +279,16 @@
     applyGoogleForwarding: applyGoogleForwarding,
     onPhoneReady: onPhoneReady
   };
+
+  /*
+   * IMPORTANTE (Google Ads):
+   * Carica il tag SUBITO nel <head>, come nello snippet ufficiale.
+   * Non aspettare DOMContentLoaded — altrimenti Ads dice “non rilevata”.
+   */
+  loadGtag();
+  var earlyChoice = readChoice();
+  if (earlyChoice === "granted") applyConsent(true);
+  else if (earlyChoice === "denied") applyConsent(false);
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", function () {
