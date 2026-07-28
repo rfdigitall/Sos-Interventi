@@ -1,20 +1,32 @@
 /**
- * Sos Interventi — Consent Mode v2 + GA4 + Google Ads (click-to-call)
+ * Sos Interventi — Consent Mode v2 + Google Ads (chiamate con numero di inoltro)
  *
- * Compila i 3 ID qui sotto (Google Ads + GA4). Finché sono vuoti, i tag non partono.
+ * Conversione attiva (Beatrice / Google Ads):
+ *   AW-18330400186 / C_QpCP2C9NccELrrzqRE
+ *   Tipo: chiamata a numero mostrato sul sito (Google forwarding number)
+ *
+ * Sicurezza:
+ * - Sostituiamo SOLO i link tel: (Chiama). WhatsApp resta sempre sul numero reale.
+ * - Se Google non fornisce il numero di inoltro (consenso negato / errore),
+ *   restano i numeri originali → le chiamate funzionano sempre.
  */
 (function () {
   "use strict";
 
   var CONFIG = {
-    /** Google Ads — es. "AW-1234567890" */
-    adsId: "",
-    /** Conversione click-to-call — es. "AW-1234567890/AbCdEfGhIjK" */
+    adsId: "AW-18330400186",
+    phoneConversionSendTo: "AW-18330400186/C_QpCP2C9NccELrrzqRE",
+    /** Deve coincidere esattamente con il numero visualizzato sul sito */
+    phoneConversionNumber: "388 809 1482",
+    /** Solo se in futuro aggiungi conversione “click sul numero” */
     conversionSendTo: "",
-    /** Google Analytics 4 — es. "G-XXXXXXXXXX" */
     ga4Id: "",
     storageKey: "sos_consent_v1"
   };
+
+  var REAL_DISPLAY = "388 809 1482";
+  var REAL_TEL = "tel:+393888091482";
+  var PHONE_TEXT_RE = /388[\s.\-]?809[\s.\-]?1482/;
 
   window.dataLayer = window.dataLayer || [];
   function gtag() {
@@ -22,7 +34,7 @@
   }
   window.gtag = gtag;
 
-  /* Consent default PRIMA di qualsiasi altro tag */
+  /* Consent default PRIMA di qualsiasi tag */
   gtag("consent", "default", {
     ad_storage: "denied",
     ad_user_data: "denied",
@@ -30,12 +42,83 @@
     analytics_storage: "denied",
     wait_for_update: 500
   });
-
   gtag("set", "url_passthrough", true);
   gtag("set", "ads_data_redaction", true);
 
   function primaryTagId() {
     return CONFIG.ga4Id || CONFIG.adsId || "";
+  }
+
+  /**
+   * Aggiorna SOLO a[href^="tel:"].
+   * Non tocca mai wa.me / WhatsApp / JSON-LD.
+   */
+  function applyGoogleForwarding(formattedNumber, mobileNumber) {
+    if (!formattedNumber && !mobileNumber) return;
+
+    var display = formattedNumber || REAL_DISPLAY;
+    var mobile = mobileNumber || "";
+    mobile = String(mobile).replace(/[\s.\-()]/g, "");
+    if (!mobile) return;
+
+    if (mobile.charAt(0) !== "+") {
+      if (mobile.indexOf("00") === 0) mobile = "+" + mobile.slice(2);
+      else if (mobile.indexOf("39") === 0) mobile = "+" + mobile;
+      else mobile = "+39" + mobile;
+    }
+
+    var telHref = "tel:" + mobile;
+    var links = document.querySelectorAll('a[href^="tel:"]');
+
+    for (var i = 0; i < links.length; i++) {
+      var a = links[i];
+      /* Mai toccare link misti / strani */
+      if (a.getAttribute("href") && a.getAttribute("href").indexOf("wa.me") !== -1) continue;
+
+      a.setAttribute("href", telHref);
+      a.setAttribute("data-google-forwarding", "1");
+
+      var strong = a.querySelector("strong");
+      if (strong && PHONE_TEXT_RE.test(strong.textContent || "")) {
+        strong.textContent = display;
+        continue;
+      }
+
+      /* Link con solo testo (nav, sticky, footer) */
+      if (a.children.length === 0 && PHONE_TEXT_RE.test(a.textContent || "")) {
+        a.textContent = display;
+        continue;
+      }
+
+      /* Footer / sticky: testo in span o nodo testo tra SVG */
+      replacePhoneInElement(a, display);
+    }
+  }
+
+  function replacePhoneInElement(root, display) {
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    var node;
+    while ((node = walker.nextNode())) {
+      if (PHONE_TEXT_RE.test(node.nodeValue || "")) {
+        node.nodeValue = (node.nodeValue || "").replace(PHONE_TEXT_RE, display);
+      }
+    }
+  }
+
+  function onPhoneReady(formattedNumber, mobileNumber) {
+    try {
+      applyGoogleForwarding(formattedNumber, mobileNumber);
+    } catch (e) {
+      /* Fallback: numeri reali restano — le chiamate non si rompono */
+    }
+  }
+
+  function configPhoneConversion() {
+    if (!CONFIG.phoneConversionSendTo || !CONFIG.phoneConversionNumber) return;
+    gtag("config", CONFIG.phoneConversionSendTo, {
+      phone_conversion_number: CONFIG.phoneConversionNumber,
+      phone_conversion_callback: onPhoneReady
+    });
   }
 
   function loadGtag() {
@@ -57,6 +140,7 @@
     if (CONFIG.adsId) {
       gtag("config", CONFIG.adsId);
     }
+    configPhoneConversion();
   }
 
   function applyConsent(granted) {
@@ -67,6 +151,10 @@
       ad_personalization: state,
       analytics_storage: state
     });
+    /* Dopo Accetta, riattiva lo swap del numero di inoltro */
+    if (granted) {
+      configPhoneConversion();
+    }
   }
 
   function saveChoice(value) {
@@ -129,31 +217,41 @@
     }
   }
 
-  /**
-   * Conversione Ads su click tel: — inviata anche con consenso negato
-   * (Consent Mode: Google può modellare la conversione).
-   */
   function trackTelConversion(ev) {
     var a = ev.currentTarget;
     if (!a || a.getAttribute("data-tracked") === "1") return;
-
+    a.setAttribute("data-tracked", "1");
     if (typeof window.gtag !== "function") return;
 
+    /* Non inviare conversion “click” se usi solo il numero di inoltro
+       (evita doppio conteggio). Solo se CONFIG.conversionSendTo è valorizzato. */
     if (CONFIG.conversionSendTo) {
       gtag("event", "conversion", {
         send_to: CONFIG.conversionSendTo,
         value: 1.0,
-        currency: "EUR"
-      });
-    }
-
-    if (CONFIG.ga4Id) {
-      gtag("event", "tel_click", {
-        event_category: "conversion",
-        event_label: "phone_call",
+        currency: "EUR",
         transport_type: "beacon"
       });
     }
+    if (CONFIG.ga4Id) {
+      gtag("event", "tel_click", {
+        event_category: "engagement",
+        event_label: a.getAttribute("data-google-forwarding") === "1" ? "google_forwarding" : "direct",
+        transport_type: "beacon"
+      });
+    }
+  }
+
+  function trackWaClick(ev) {
+    var a = ev.currentTarget;
+    if (!a || a.getAttribute("data-wa-tracked") === "1") return;
+    a.setAttribute("data-wa-tracked", "1");
+    if (typeof window.gtag !== "function" || !CONFIG.ga4Id) return;
+    gtag("event", "whatsapp_click", {
+      event_category: "engagement",
+      event_label: "whatsapp",
+      transport_type: "beacon"
+    });
   }
 
   function bindTelLinks() {
@@ -163,18 +261,35 @@
     }
   }
 
+  function bindWaLinks() {
+    var links = document.querySelectorAll('a[href*="wa.me/"]');
+    for (var i = 0; i < links.length; i++) {
+      /* Garantisce che WA punti sempre al numero reale */
+      var href = links[i].getAttribute("href") || "";
+      if (href.indexOf("393888091482") === -1 && href.indexOf("wa.me/") !== -1) {
+        links[i].setAttribute("href", "https://wa.me/393888091482");
+      }
+      links[i].addEventListener("click", trackWaClick);
+    }
+  }
+
+  /* Espose per debug in console: SosInterventi.config */
   window.SosInterventi = {
     config: CONFIG,
-    trackTelConversion: trackTelConversion
+    realTel: REAL_TEL,
+    applyGoogleForwarding: applyGoogleForwarding,
+    onPhoneReady: onPhoneReady
   };
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", function () {
       initBanner();
       bindTelLinks();
+      bindWaLinks();
     });
   } else {
     initBanner();
     bindTelLinks();
+    bindWaLinks();
   }
 })();
