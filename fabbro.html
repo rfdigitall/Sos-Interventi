@@ -33,10 +33,11 @@
   <style>
     :root{--forest:#1b3a2f;--cream:#f3ede4;--rust:#c45c26;--ink:#1f1a17;--font-display:"Fraunces",Georgia,serif;--font-body:"IBM Plex Sans",system-ui,sans-serif}
     *{box-sizing:border-box}body{margin:0;font-family:var(--font-body);background:var(--cream);color:var(--ink);line-height:1.5}
-    .site-header{position:sticky;top:0;z-index:40;background:rgba(15,31,24,.94);border-bottom:1px solid rgba(255,255,255,.08)}
+    .site-header{position:sticky;top:0;z-index:40;background:#0f1f18;border-bottom:1px solid rgba(255,255,255,.08)}
     .site-header__inner{max-width:72rem;margin:0 auto;padding:.85rem 1.15rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
-    .brand--logo{line-height:0;display:inline-flex}
-    .brand--logo img{display:block;height:52px;width:auto;max-width:190px}
+    .brand--logo{line-height:0;display:inline-flex;text-decoration:none;-webkit-tap-highlight-color:transparent}
+    .brand--logo:hover,.brand--logo:focus,.brand--logo:active{outline:none;opacity:1}
+    .brand--logo img{display:block;height:52px;width:auto;max-width:190px;pointer-events:none}
     .nav-tel{font-weight:700;color:#f0c9a8;text-decoration:none;border-bottom:2px solid var(--rust);white-space:nowrap}
     .nav-links a{color:#d8e0da}
     .idra-hero{position:relative;min-height:min(78vh,640px);background:#0f1f18;color:#f3ede4;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center}

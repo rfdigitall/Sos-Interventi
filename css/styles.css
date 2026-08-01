@@ -61,8 +61,7 @@ a:hover { color: var(--rust-deep); }
   position: sticky;
   top: 0;
   z-index: 40;
-  background: rgba(15, 31, 24, .94);
-  backdrop-filter: blur(10px);
+  background: #0f1f18;
   border-bottom: 1px solid rgba(255, 255, 255, .08);
 }
 
@@ -103,9 +102,24 @@ a:hover { color: var(--rust-deep); }
 .brand--logo {
   line-height: 0;
   background: transparent !important;
+  text-decoration: none !important;
+  -webkit-tap-highlight-color: transparent;
+  border-radius: 2px;
 }
 
-.brand--logo:hover { opacity: .92; }
+.brand--logo:hover,
+.brand--logo:focus,
+.brand--logo:active {
+  opacity: 1;
+  outline: none;
+  box-shadow: none;
+  text-decoration: none !important;
+}
+
+.brand--logo:focus-visible {
+  outline: 2px solid rgba(240, 201, 168, .55);
+  outline-offset: 4px;
+}
 
 .brand--logo img {
   display: block;
@@ -116,6 +130,7 @@ a:hover { color: var(--rust-deep); }
   mix-blend-mode: normal;
   filter: none;
   image-rendering: auto;
+  pointer-events: none; /* evita artefatti hover pe imagine */
 }
 
 .footer-logo {
@@ -145,8 +160,13 @@ a:hover { color: var(--rust-deep); }
   border-bottom: 2px solid var(--rust);
   padding-bottom: 1px;
   white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
 }
 .nav-tel:hover { color: #fff; border-color: #e8a878; }
+.nav-tel:focus-visible {
+  outline: 2px solid rgba(240, 201, 168, .55);
+  outline-offset: 3px;
+}
 
 .nav-links {
   display: none;
@@ -160,10 +180,20 @@ a:hover { color: var(--rust-deep); }
   color: #d8e0da;
   font-size: .9rem;
   font-weight: 500;
+  -webkit-tap-highlight-color: transparent;
 }
-.nav-links a:hover { color: #f0c9a8; }
+.nav-links a:hover { color: #f0c9a8; text-decoration: none; }
+.nav-links a:focus-visible {
+  outline: 2px solid rgba(240, 201, 168, .55);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
 .nav-links a[aria-current="page"] { color: #fff; }
 
+/* Header: niente outline arancione “strano” dal :focus-visible globale */
+.site-header a:focus:not(:focus-visible) {
+  outline: none;
+}
 @media (min-width: 720px) {
   .nav-links { display: flex; }
   .site-header__inner { gap: 1.5rem; }

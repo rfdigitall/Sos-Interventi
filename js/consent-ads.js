@@ -15,9 +15,12 @@
 
   var CONFIG = {
     adsId: "AW-18330400186",
+    /** Chiamate con numero di inoltro Google (swap sul sito) */
     phoneConversionSendTo: "AW-18330400186/C_QpCP2C9NccELrrzqRE",
     phoneConversionNumber: "388 809 1482",
-    conversionSendTo: "",
+    /** Click tel — conversione al click su Chiama / tel: */
+    conversionSendTo: "AW-18330400186/dAXnCJzgr9ocELrrzqRE",
+    /** GA4 — flusso SoS */
     ga4Id: "G-N643STDFRS",
     storageKey: "sos_consent_v1"
   };
@@ -111,6 +114,14 @@
   function onPhoneReady(formattedNumber, mobileNumber) {
     try {
       applyGoogleForwarding(formattedNumber, mobileNumber);
+      document.documentElement.setAttribute("data-wcc", "1");
+      if (typeof console !== "undefined" && console.info) {
+        console.info(
+          "[SosInterventi] Numero di inoltro Google attivo:",
+          formattedNumber || mobileNumber,
+          "— solo queste chiamate contano in Google Ads."
+        );
+      }
     } catch (e) { /* keep real numbers */ }
   }
 
@@ -120,6 +131,13 @@
       phone_conversion_number: CONFIG.phoneConversionNumber,
       phone_conversion_callback: onPhoneReady
     });
+  }
+
+  /** Ripeti lo snippet telefono: Google a volte lo attiva solo dopo consent + gclid */
+  function refreshPhoneConversion() {
+    configPhoneConversion();
+    setTimeout(configPhoneConversion, 800);
+    setTimeout(configPhoneConversion, 2500);
   }
 
   function configGa4(extra) {
@@ -166,10 +184,9 @@
       analytics_storage: state
     });
     if (granted) {
-      /* Re-config dopo consenso: altrimenti GA4 resta “muto” in Realtime */
       configGa4({ send_page_view: true });
       if (CONFIG.adsId) gtag("config", CONFIG.adsId);
-      configPhoneConversion();
+      refreshPhoneConversion();
     }
   }
 
@@ -236,6 +253,7 @@
     a.setAttribute("data-tracked-at", String(now));
 
     if (CONFIG.conversionSendTo) {
+      /* Event snippet “Click tel” — SOLO al click, mai in <head> su pageview */
       gtag("event", "conversion", {
         send_to: CONFIG.conversionSendTo,
         value: 1.0,
@@ -321,7 +339,9 @@
     config: CONFIG,
     realTel: REAL_TEL,
     hasAnalyticsConsent: hasAnalyticsConsent,
-    /** Test da console: SosInterventi.testTelEvent() */
+    hasForwardingNumber: function () {
+      return document.documentElement.getAttribute("data-wcc") === "1";
+    },
     testTelEvent: function () {
       if (!hasAnalyticsConsent()) {
         console.warn("Prima Accetta i cookie.");
@@ -346,6 +366,11 @@
   var earlyChoice = readChoice();
   if (earlyChoice === "granted") applyConsent(true);
   else if (earlyChoice === "denied") applyConsent(false);
+
+  /* Debug ufficiale Google: …/fabbro.html#google-wcc-debug */
+  if (/google-wcc-debug/i.test(location.hash || "") && earlyChoice === "granted") {
+    refreshPhoneConversion();
+  }
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", function () {
