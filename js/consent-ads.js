@@ -159,16 +159,11 @@
   }
 
   function loadGtag() {
-    var id = primaryTagId();
-    if (!id) return;
-    if (document.getElementById("gtag-js")) return;
-
-    var s = document.createElement("script");
-    s.id = "gtag-js";
-    s.async = true;
-    s.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(id);
-    document.head.appendChild(s);
-
+    /*
+     * gtag.js è caricato dallo HTML (tag statico subito dopo questo file).
+     * Qui solo comandi in coda — Tag Assistant vede lo script nel codice pagina.
+     * NON iniettare un secondo gtag.js (doppio tag).
+     */
     gtag("js", new Date());
     configGa4();
     if (CONFIG.adsId) gtag("config", CONFIG.adsId);
