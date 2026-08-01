@@ -1,14 +1,14 @@
 /**
- * Sos Interventi — Consent Mode v2 + Google Ads (chiamate con numero di inoltro)
+ * Sos Interventi — Consent Mode v2 + GA4 + Google Ads
  *
- * Conversione attiva (Beatrice / Google Ads):
- *   AW-18330400186 / C_QpCP2C9NccELrrzqRE
- *   Tipo: chiamata a numero mostrato sul sito (Google forwarding number)
+ * Ads: AW-18330400186 + chiamate (numero di inoltro)
+ * GA4: G-N643STDFRS
  *
- * Sicurezza:
- * - Sostituiamo SOLO i link tel: (Chiama). WhatsApp resta sempre sul numero reale.
- * - Se Google non fornisce il numero di inoltro (consenso negato / errore),
- *   restano i numeri originali → le chiamate funzionano sempre.
+ * IMPORTANTE per i test GA4:
+ * 1) Clicca ACCETTA sul banner cookie
+ * 2) Apri GA4 → Reports in tempo reale (Realtime)
+ * 3) Poi clicca Chiama — cerca eventi: tel_click / generate_lead
+ * Senza Accetta, analytics_storage=denied → in Realtime spesso non vedi nulla.
  */
 (function () {
   "use strict";
@@ -16,11 +16,8 @@
   var CONFIG = {
     adsId: "AW-18330400186",
     phoneConversionSendTo: "AW-18330400186/C_QpCP2C9NccELrrzqRE",
-    /** Deve coincidere esattamente con il numero visualizzato sul sito */
     phoneConversionNumber: "388 809 1482",
-    /** Solo se in futuro aggiungi conversione “click sul numero” */
     conversionSendTo: "",
-    /** GA4 — flusso SoS */
     ga4Id: "G-N643STDFRS",
     storageKey: "sos_consent_v1"
   };
@@ -35,7 +32,6 @@
   }
   window.gtag = gtag;
 
-  /* Consent default PRIMA di qualsiasi tag */
   gtag("consent", "default", {
     ad_storage: "denied",
     ad_user_data: "denied",
@@ -50,16 +46,29 @@
     return CONFIG.ga4Id || CONFIG.adsId || "";
   }
 
-  /**
-   * Aggiorna SOLO a[href^="tel:"].
-   * Non tocca mai wa.me / WhatsApp / JSON-LD.
-   */
+  function readChoice() {
+    try {
+      return localStorage.getItem(CONFIG.storageKey);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function saveChoice(value) {
+    try {
+      localStorage.setItem(CONFIG.storageKey, value);
+    } catch (e) { /* ignore */ }
+  }
+
+  function hasAnalyticsConsent() {
+    return readChoice() === "granted";
+  }
+
   function applyGoogleForwarding(formattedNumber, mobileNumber) {
     if (!formattedNumber && !mobileNumber) return;
 
     var display = formattedNumber || REAL_DISPLAY;
-    var mobile = mobileNumber || "";
-    mobile = String(mobile).replace(/[\s.\-()]/g, "");
+    var mobile = String(mobileNumber || "").replace(/[\s.\-()]/g, "");
     if (!mobile) return;
 
     if (mobile.charAt(0) !== "+") {
@@ -70,12 +79,9 @@
 
     var telHref = "tel:" + mobile;
     var links = document.querySelectorAll('a[href^="tel:"]');
-
     for (var i = 0; i < links.length; i++) {
       var a = links[i];
-      /* Mai toccare link misti / strani */
-      if (a.getAttribute("href") && a.getAttribute("href").indexOf("wa.me") !== -1) continue;
-
+      if ((a.getAttribute("href") || "").indexOf("wa.me") !== -1) continue;
       a.setAttribute("href", telHref);
       a.setAttribute("data-google-forwarding", "1");
 
@@ -84,14 +90,10 @@
         strong.textContent = display;
         continue;
       }
-
-      /* Link con solo testo (nav, sticky, footer) */
       if (a.children.length === 0 && PHONE_TEXT_RE.test(a.textContent || "")) {
         a.textContent = display;
         continue;
       }
-
-      /* Footer / sticky: testo in span o nodo testo tra SVG */
       replacePhoneInElement(a, display);
     }
   }
@@ -109,9 +111,7 @@
   function onPhoneReady(formattedNumber, mobileNumber) {
     try {
       applyGoogleForwarding(formattedNumber, mobileNumber);
-    } catch (e) {
-      /* Fallback: numeri reali restano — le chiamate non si rompono */
-    }
+    } catch (e) { /* keep real numbers */ }
   }
 
   function configPhoneConversion() {
@@ -120,6 +120,24 @@
       phone_conversion_number: CONFIG.phoneConversionNumber,
       phone_conversion_callback: onPhoneReady
     });
+  }
+
+  function configGa4(extra) {
+    if (!CONFIG.ga4Id) return;
+    var opts = {
+      anonymize_ip: true,
+      send_page_view: true
+    };
+    if (extra) {
+      for (var k in extra) {
+        if (Object.prototype.hasOwnProperty.call(extra, k)) opts[k] = extra[k];
+      }
+    }
+    /* debug_mode se URL ha ?ga_debug=1 → compare in GA4 DebugView */
+    if (/[?&]ga_debug=1(?:&|$)/.test(location.search)) {
+      opts.debug_mode = true;
+    }
+    gtag("config", CONFIG.ga4Id, opts);
   }
 
   function loadGtag() {
@@ -134,13 +152,8 @@
     document.head.appendChild(s);
 
     gtag("js", new Date());
-
-    if (CONFIG.ga4Id) {
-      gtag("config", CONFIG.ga4Id, { anonymize_ip: true, send_page_view: true });
-    }
-    if (CONFIG.adsId) {
-      gtag("config", CONFIG.adsId);
-    }
+    configGa4();
+    if (CONFIG.adsId) gtag("config", CONFIG.adsId);
     configPhoneConversion();
   }
 
@@ -152,23 +165,11 @@
       ad_personalization: state,
       analytics_storage: state
     });
-    /* Dopo Accetta, riattiva lo swap del numero di inoltro */
     if (granted) {
+      /* Re-config dopo consenso: altrimenti GA4 resta “muto” in Realtime */
+      configGa4({ send_page_view: true });
+      if (CONFIG.adsId) gtag("config", CONFIG.adsId);
       configPhoneConversion();
-    }
-  }
-
-  function saveChoice(value) {
-    try {
-      localStorage.setItem(CONFIG.storageKey, value);
-    } catch (e) { /* ignore */ }
-  }
-
-  function readChoice() {
-    try {
-      return localStorage.getItem(CONFIG.storageKey);
-    } catch (e) {
-      return null;
     }
   }
 
@@ -186,7 +187,6 @@
 
   function initBanner() {
     var choice = readChoice();
-
     if (choice === "granted") {
       applyConsent(true);
       hideBanner();
@@ -197,7 +197,6 @@
       hideBanner();
       return;
     }
-
     showBanner();
     var accept = document.getElementById("cookie-accept");
     var refuse = document.getElementById("cookie-refuse");
@@ -217,13 +216,25 @@
     }
   }
 
-  function trackTelConversion(ev) {
-    var a = ev.currentTarget;
-    if (!a || a.getAttribute("data-tracked") === "1") return;
-    a.setAttribute("data-tracked", "1");
-    if (typeof window.gtag !== "function") return;
+  function sendGa4Event(name, params) {
+    if (!CONFIG.ga4Id || typeof window.gtag !== "function") return;
+    var payload = params || {};
+    payload.send_to = CONFIG.ga4Id;
+    payload.transport_type = "beacon";
+    gtag("event", name, payload);
+  }
 
-    /* Conversione Ads “click sul numero” — solo se valorizzato (ora usiamo inoltro Google) */
+  function trackTelConversion(ev) {
+    var a = ev.target && ev.target.closest ? ev.target.closest('a[href^="tel:"]') : null;
+    if (!a) a = ev.currentTarget;
+    if (!a || !a.getAttribute || (a.getAttribute("href") || "").indexOf("tel:") !== 0) return;
+
+    /* evita doppio fire click+touchstart */
+    var now = Date.now();
+    var last = parseInt(a.getAttribute("data-tracked-at") || "0", 10);
+    if (last && now - last < 2000) return;
+    a.setAttribute("data-tracked-at", String(now));
+
     if (CONFIG.conversionSendTo) {
       gtag("event", "conversion", {
         send_to: CONFIG.conversionSendTo,
@@ -233,73 +244,104 @@
       });
     }
 
-    /*
-     * GA4: il click su Chiama (non la chiamata completata).
-     * La chiamata reale con numero di inoltro Google si vede in Google Ads → Conversioni.
-     */
-    if (CONFIG.ga4Id) {
-      gtag("event", "tel_click", {
-        event_category: "engagement",
-        event_label: a.getAttribute("data-google-forwarding") === "1" ? "google_forwarding" : "direct",
-        link_url: a.getAttribute("href") || "",
-        transport_type: "beacon"
-      });
-      /* Evento consigliato — più facile da trovare in GA4 Realtime / Engagement */
-      gtag("event", "generate_lead", {
-        currency: "EUR",
-        value: 1,
-        lead_source: "phone_click",
-        transport_type: "beacon"
-      });
+    if (!hasAnalyticsConsent()) {
+      if (typeof console !== "undefined" && console.info) {
+        console.info(
+          "[SosInterventi] Cookie non accettati: tel_click non compare in GA4 Realtime. Clicca Accetta, poi riprova."
+        );
+      }
+      return;
     }
-  }
 
-  function trackWaClick(ev) {
-    var a = ev.currentTarget;
-    if (!a || a.getAttribute("data-wa-tracked") === "1") return;
-    a.setAttribute("data-wa-tracked", "1");
-    if (typeof window.gtag !== "function" || !CONFIG.ga4Id) return;
-    gtag("event", "whatsapp_click", {
+    var label =
+      a.getAttribute("data-google-forwarding") === "1" ? "google_forwarding" : "direct";
+
+    sendGa4Event("tel_click", {
       event_category: "engagement",
-      event_label: "whatsapp",
-      transport_type: "beacon"
+      event_label: label,
+      link_url: a.getAttribute("href") || "",
+      method: "phone"
+    });
+    sendGa4Event("generate_lead", {
+      currency: "EUR",
+      value: 1,
+      lead_source: "phone_click"
     });
   }
 
-  function bindTelLinks() {
-    var links = document.querySelectorAll('a[href^="tel:"]');
-    for (var i = 0; i < links.length; i++) {
-      /* touchstart/pointerdown: su mobile il dialer apre prima che il click finisca */
-      links[i].addEventListener("click", trackTelConversion);
-      links[i].addEventListener("touchstart", trackTelConversion, { passive: true });
-    }
+  function trackWaClick(ev) {
+    var a = ev.target && ev.target.closest ? ev.target.closest('a[href*="wa.me/"]') : null;
+    if (!a) a = ev.currentTarget;
+    if (!a) return;
+
+    var now = Date.now();
+    var last = parseInt(a.getAttribute("data-wa-tracked-at") || "0", 10);
+    if (last && now - last < 2000) return;
+    a.setAttribute("data-wa-tracked-at", String(now));
+
+    if (!hasAnalyticsConsent()) return;
+
+    sendGa4Event("whatsapp_click", {
+      event_category: "engagement",
+      event_label: "whatsapp",
+      method: "whatsapp"
+    });
   }
 
-  function bindWaLinks() {
-    var links = document.querySelectorAll('a[href*="wa.me/"]');
-    for (var i = 0; i < links.length; i++) {
-      /* Garantisce che WA punti sempre al numero reale */
-      var href = links[i].getAttribute("href") || "";
-      if (href.indexOf("393888091482") === -1 && href.indexOf("wa.me/") !== -1) {
-        links[i].setAttribute("href", "https://wa.me/393888091482");
+  function bindClicks() {
+    /* Delegation: funziona anche dopo che Google cambia i tel: */
+    document.addEventListener("click", function (ev) {
+      var t = ev.target;
+      if (!t || !t.closest) return;
+      if (t.closest('a[href^="tel:"]')) trackTelConversion(ev);
+      else if (t.closest('a[href*="wa.me/"]')) trackWaClick(ev);
+    }, true);
+
+    document.addEventListener(
+      "touchstart",
+      function (ev) {
+        var t = ev.target;
+        if (!t || !t.closest) return;
+        if (t.closest('a[href^="tel:"]')) trackTelConversion(ev);
+      },
+      { passive: true, capture: true }
+    );
+
+    /* Assicura WA sul numero reale */
+    var was = document.querySelectorAll('a[href*="wa.me/"]');
+    for (var i = 0; i < was.length; i++) {
+      var href = was[i].getAttribute("href") || "";
+      if (href.indexOf("393888091482") === -1) {
+        was[i].setAttribute("href", "https://wa.me/393888091482");
       }
-      links[i].addEventListener("click", trackWaClick);
     }
   }
 
-  /* Espose per debug in console: SosInterventi.config */
   window.SosInterventi = {
     config: CONFIG,
     realTel: REAL_TEL,
-    applyGoogleForwarding: applyGoogleForwarding,
-    onPhoneReady: onPhoneReady
+    hasAnalyticsConsent: hasAnalyticsConsent,
+    /** Test da console: SosInterventi.testTelEvent() */
+    testTelEvent: function () {
+      if (!hasAnalyticsConsent()) {
+        console.warn("Prima Accetta i cookie.");
+        return false;
+      }
+      sendGa4Event("tel_click", {
+        event_category: "engagement",
+        event_label: "manual_test",
+        method: "phone"
+      });
+      sendGa4Event("generate_lead", {
+        currency: "EUR",
+        value: 1,
+        lead_source: "manual_test"
+      });
+      console.info("Eventi inviati a", CONFIG.ga4Id, "— apri GA4 Realtime.");
+      return true;
+    }
   };
 
-  /*
-   * IMPORTANTE (Google Ads):
-   * Carica il tag SUBITO nel <head>, come nello snippet ufficiale.
-   * Non aspettare DOMContentLoaded — altrimenti Ads dice “non rilevata”.
-   */
   loadGtag();
   var earlyChoice = readChoice();
   if (earlyChoice === "granted") applyConsent(true);
@@ -308,12 +350,10 @@
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", function () {
       initBanner();
-      bindTelLinks();
-      bindWaLinks();
+      bindClicks();
     });
   } else {
     initBanner();
-    bindTelLinks();
-    bindWaLinks();
+    bindClicks();
   }
 })();
