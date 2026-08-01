@@ -20,7 +20,8 @@
     phoneConversionNumber: "388 809 1482",
     /** Solo se in futuro aggiungi conversione “click sul numero” */
     conversionSendTo: "",
-    ga4Id: "",
+    /** GA4 — flusso SoS */
+    ga4Id: "G-N643STDFRS",
     storageKey: "sos_consent_v1"
   };
 
