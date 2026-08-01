@@ -223,8 +223,7 @@
     a.setAttribute("data-tracked", "1");
     if (typeof window.gtag !== "function") return;
 
-    /* Non inviare conversion “click” se usi solo il numero di inoltro
-       (evita doppio conteggio). Solo se CONFIG.conversionSendTo è valorizzato. */
+    /* Conversione Ads “click sul numero” — solo se valorizzato (ora usiamo inoltro Google) */
     if (CONFIG.conversionSendTo) {
       gtag("event", "conversion", {
         send_to: CONFIG.conversionSendTo,
@@ -233,10 +232,23 @@
         transport_type: "beacon"
       });
     }
+
+    /*
+     * GA4: il click su Chiama (non la chiamata completata).
+     * La chiamata reale con numero di inoltro Google si vede in Google Ads → Conversioni.
+     */
     if (CONFIG.ga4Id) {
       gtag("event", "tel_click", {
         event_category: "engagement",
         event_label: a.getAttribute("data-google-forwarding") === "1" ? "google_forwarding" : "direct",
+        link_url: a.getAttribute("href") || "",
+        transport_type: "beacon"
+      });
+      /* Evento consigliato — più facile da trovare in GA4 Realtime / Engagement */
+      gtag("event", "generate_lead", {
+        currency: "EUR",
+        value: 1,
+        lead_source: "phone_click",
         transport_type: "beacon"
       });
     }
@@ -257,7 +269,9 @@
   function bindTelLinks() {
     var links = document.querySelectorAll('a[href^="tel:"]');
     for (var i = 0; i < links.length; i++) {
+      /* touchstart/pointerdown: su mobile il dialer apre prima che il click finisca */
       links[i].addEventListener("click", trackTelConversion);
+      links[i].addEventListener("touchstart", trackTelConversion, { passive: true });
     }
   }
 
