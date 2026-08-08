@@ -1,23 +1,24 @@
 /**
  * Sos Interventi — Consent Mode v2 + GA4 + Google Ads
  *
- * Ads: AW-18330400186 + chiamate (numero di inoltro)
+ * Ads: AW-18330400186
+ * Click tel: AW-18330400186/dAXnCJzgr9ocELrrzqRE
  * GA4: G-N643STDFRS
  *
- * IMPORTANTE per i test GA4:
- * 1) Clicca ACCETTA sul banner cookie
- * 2) Apri GA4 → Reports in tempo reale (Realtime)
- * 3) Poi clicca Chiama — cerca eventi: tel_click / generate_lead
- * Senza Accetta, analytics_storage=denied → in Realtime spesso non vedi nulla.
+ * Niente numero di inoltro Google (800): sul sito resta SEMPRE 388 809 1482.
+ *
+ * Click tel ≠ chiamata ricevuta. Max 1 tracking tel/WA per sessione browser.
+ *
+ * Test GA4:
+ * 1) Accetta cookie
+ * 2) GA4 → Realtime
+ * 3) Click Chiama → eventi tel_click / generate_lead (una sola volta a sessione)
  */
 (function () {
   "use strict";
 
   var CONFIG = {
     adsId: "AW-18330400186",
-    /** Chiamate con numero di inoltro Google (swap sul sito) */
-    phoneConversionSendTo: "AW-18330400186/C_QpCP2C9NccELrrzqRE",
-    phoneConversionNumber: "388 809 1482",
     /** Click tel — conversione al click su Chiama / tel: */
     conversionSendTo: "AW-18330400186/dAXnCJzgr9ocELrrzqRE",
     /** GA4 — flusso SoS */
@@ -25,9 +26,7 @@
     storageKey: "sos_consent_v1"
   };
 
-  var REAL_DISPLAY = "388 809 1482";
   var REAL_TEL = "tel:+393888091482";
-  var PHONE_TEXT_RE = /388[\s.\-]?809[\s.\-]?1482/;
 
   window.dataLayer = window.dataLayer || [];
   function gtag() {
@@ -67,79 +66,6 @@
     return readChoice() === "granted";
   }
 
-  function applyGoogleForwarding(formattedNumber, mobileNumber) {
-    if (!formattedNumber && !mobileNumber) return;
-
-    var display = formattedNumber || REAL_DISPLAY;
-    var mobile = String(mobileNumber || "").replace(/[\s.\-()]/g, "");
-    if (!mobile) return;
-
-    if (mobile.charAt(0) !== "+") {
-      if (mobile.indexOf("00") === 0) mobile = "+" + mobile.slice(2);
-      else if (mobile.indexOf("39") === 0) mobile = "+" + mobile;
-      else mobile = "+39" + mobile;
-    }
-
-    var telHref = "tel:" + mobile;
-    var links = document.querySelectorAll('a[href^="tel:"]');
-    for (var i = 0; i < links.length; i++) {
-      var a = links[i];
-      if ((a.getAttribute("href") || "").indexOf("wa.me") !== -1) continue;
-      a.setAttribute("href", telHref);
-      a.setAttribute("data-google-forwarding", "1");
-
-      var strong = a.querySelector("strong");
-      if (strong && PHONE_TEXT_RE.test(strong.textContent || "")) {
-        strong.textContent = display;
-        continue;
-      }
-      if (a.children.length === 0 && PHONE_TEXT_RE.test(a.textContent || "")) {
-        a.textContent = display;
-        continue;
-      }
-      replacePhoneInElement(a, display);
-    }
-  }
-
-  function replacePhoneInElement(root, display) {
-    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
-    var node;
-    while ((node = walker.nextNode())) {
-      if (PHONE_TEXT_RE.test(node.nodeValue || "")) {
-        node.nodeValue = (node.nodeValue || "").replace(PHONE_TEXT_RE, display);
-      }
-    }
-  }
-
-  function onPhoneReady(formattedNumber, mobileNumber) {
-    try {
-      applyGoogleForwarding(formattedNumber, mobileNumber);
-      document.documentElement.setAttribute("data-wcc", "1");
-      if (typeof console !== "undefined" && console.info) {
-        console.info(
-          "[SosInterventi] Numero di inoltro Google attivo:",
-          formattedNumber || mobileNumber,
-          "— solo queste chiamate contano in Google Ads."
-        );
-      }
-    } catch (e) { /* keep real numbers */ }
-  }
-
-  function configPhoneConversion() {
-    if (!CONFIG.phoneConversionSendTo || !CONFIG.phoneConversionNumber) return;
-    gtag("config", CONFIG.phoneConversionSendTo, {
-      phone_conversion_number: CONFIG.phoneConversionNumber,
-      phone_conversion_callback: onPhoneReady
-    });
-  }
-
-  /** Ripeti lo snippet telefono: Google a volte lo attiva solo dopo consent + gclid */
-  function refreshPhoneConversion() {
-    configPhoneConversion();
-    setTimeout(configPhoneConversion, 800);
-    setTimeout(configPhoneConversion, 2500);
-  }
-
   function configGa4(extra) {
     if (!CONFIG.ga4Id) return;
     var opts = {
@@ -151,7 +77,6 @@
         if (Object.prototype.hasOwnProperty.call(extra, k)) opts[k] = extra[k];
       }
     }
-    /* debug_mode se URL ha ?ga_debug=1 → compare in GA4 DebugView */
     if (/[?&]ga_debug=1(?:&|$)/.test(location.search)) {
       opts.debug_mode = true;
     }
@@ -161,13 +86,11 @@
   function loadGtag() {
     /*
      * gtag.js è caricato dallo HTML (tag statico subito dopo questo file).
-     * Qui solo comandi in coda — Tag Assistant vede lo script nel codice pagina.
-     * NON iniettare un secondo gtag.js (doppio tag).
+     * Qui solo comandi in coda — niente secondo tag.
      */
     gtag("js", new Date());
     configGa4();
     if (CONFIG.adsId) gtag("config", CONFIG.adsId);
-    configPhoneConversion();
   }
 
   function applyConsent(granted) {
@@ -181,7 +104,6 @@
     if (granted) {
       configGa4({ send_page_view: true });
       if (CONFIG.adsId) gtag("config", CONFIG.adsId);
-      refreshPhoneConversion();
     }
   }
 
@@ -228,8 +150,52 @@
     }
   }
 
+  /* ——— Tracking Chiama / WhatsApp (best practice) ———
+   * - Click ≠ chiamata ricevuta (per le chiamate reali usa anche "Chiamate dagli annunci" in Ads)
+   * - Solo listener "click" (niente touchstart → niente doppio conteggio mobile)
+   * - Max 1 conversione Ads + 1 tel_click + 1 generate_lead per sessione tab
+   * - Solo numero reale 388 809 1482 (ignora tel: strani / spam)
+   */
+  var TEL_TRACK_KEY = "sos_tel_tracked_v1";
+  var WA_TRACK_KEY = "sos_wa_tracked_v1";
+  var REAL_TEL_NORM = "tel:+393888091482";
+
+  function sessionAlreadyTracked(key) {
+    try {
+      return sessionStorage.getItem(key) === "1";
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function markSessionTracked(key) {
+    try {
+      sessionStorage.setItem(key, "1");
+    } catch (e) { /* ignore */ }
+  }
+
+  function normalizeTelHref(href) {
+    return String(href || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[\s\-\u00a0().]/g, "");
+  }
+
+  function isOurTelLink(a) {
+    if (!a || !a.getAttribute) return false;
+    var href = normalizeTelHref(a.getAttribute("href"));
+    return href === REAL_TEL_NORM || href === "tel:393888091482";
+  }
+
+  function isOurWaLink(a) {
+    if (!a || !a.getAttribute) return false;
+    var href = a.getAttribute("href") || "";
+    return href.indexOf("wa.me/") !== -1 && href.indexOf("393888091482") !== -1;
+  }
+
   function sendGa4Event(name, params) {
     if (!CONFIG.ga4Id || typeof window.gtag !== "function") return;
+    if (!hasAnalyticsConsent()) return;
     var payload = params || {};
     payload.send_to = CONFIG.ga4Id;
     payload.transport_type = "beacon";
@@ -237,18 +203,15 @@
   }
 
   function trackTelConversion(ev) {
+    if (ev && typeof ev.button === "number" && ev.button !== 0) return;
+
     var a = ev.target && ev.target.closest ? ev.target.closest('a[href^="tel:"]') : null;
-    if (!a) a = ev.currentTarget;
-    if (!a || !a.getAttribute || (a.getAttribute("href") || "").indexOf("tel:") !== 0) return;
+    if (!isOurTelLink(a)) return;
+    if (sessionAlreadyTracked(TEL_TRACK_KEY)) return;
+    markSessionTracked(TEL_TRACK_KEY);
 
-    /* evita doppio fire click+touchstart */
-    var now = Date.now();
-    var last = parseInt(a.getAttribute("data-tracked-at") || "0", 10);
-    if (last && now - last < 2000) return;
-    a.setAttribute("data-tracked-at", String(now));
-
-    if (CONFIG.conversionSendTo) {
-      /* Event snippet “Click tel” — SOLO al click, mai in <head> su pageview */
+    /* Conversione Google Ads — 1 intent di chiamata per sessione */
+    if (CONFIG.conversionSendTo && typeof window.gtag === "function") {
       gtag("event", "conversion", {
         send_to: CONFIG.conversionSendTo,
         value: 1.0,
@@ -257,22 +220,11 @@
       });
     }
 
-    if (!hasAnalyticsConsent()) {
-      if (typeof console !== "undefined" && console.info) {
-        console.info(
-          "[SosInterventi] Cookie non accettati: tel_click non compare in GA4 Realtime. Clicca Accetta, poi riprova."
-        );
-      }
-      return;
-    }
-
-    var label =
-      a.getAttribute("data-google-forwarding") === "1" ? "google_forwarding" : "direct";
-
+    /* GA4 — stessi limiti, così lead/user ≈ 1 */
     sendGa4Event("tel_click", {
       event_category: "engagement",
-      event_label: label,
-      link_url: a.getAttribute("href") || "",
+      event_label: "direct",
+      link_url: REAL_TEL,
       method: "phone"
     });
     sendGa4Event("generate_lead", {
@@ -283,16 +235,12 @@
   }
 
   function trackWaClick(ev) {
+    if (ev && typeof ev.button === "number" && ev.button !== 0) return;
+
     var a = ev.target && ev.target.closest ? ev.target.closest('a[href*="wa.me/"]') : null;
-    if (!a) a = ev.currentTarget;
-    if (!a) return;
-
-    var now = Date.now();
-    var last = parseInt(a.getAttribute("data-wa-tracked-at") || "0", 10);
-    if (last && now - last < 2000) return;
-    a.setAttribute("data-wa-tracked-at", String(now));
-
-    if (!hasAnalyticsConsent()) return;
+    if (!isOurWaLink(a)) return;
+    if (sessionAlreadyTracked(WA_TRACK_KEY)) return;
+    markSessionTracked(WA_TRACK_KEY);
 
     sendGa4Event("whatsapp_click", {
       event_category: "engagement",
@@ -302,25 +250,17 @@
   }
 
   function bindClicks() {
-    /* Delegation: funziona anche dopo che Google cambia i tel: */
-    document.addEventListener("click", function (ev) {
-      var t = ev.target;
-      if (!t || !t.closest) return;
-      if (t.closest('a[href^="tel:"]')) trackTelConversion(ev);
-      else if (t.closest('a[href*="wa.me/"]')) trackWaClick(ev);
-    }, true);
-
     document.addEventListener(
-      "touchstart",
+      "click",
       function (ev) {
         var t = ev.target;
         if (!t || !t.closest) return;
         if (t.closest('a[href^="tel:"]')) trackTelConversion(ev);
+        else if (t.closest('a[href*="wa.me/"]')) trackWaClick(ev);
       },
-      { passive: true, capture: true }
+      true
     );
 
-    /* Assicura WA sul numero reale */
     var was = document.querySelectorAll('a[href*="wa.me/"]');
     for (var i = 0; i < was.length; i++) {
       var href = was[i].getAttribute("href") || "";
@@ -334,14 +274,15 @@
     config: CONFIG,
     realTel: REAL_TEL,
     hasAnalyticsConsent: hasAnalyticsConsent,
-    hasForwardingNumber: function () {
-      return document.documentElement.getAttribute("data-wcc") === "1";
-    },
+    /** Reset limite sessione + invia eventi test (solo debug) */
     testTelEvent: function () {
       if (!hasAnalyticsConsent()) {
         console.warn("Prima Accetta i cookie.");
         return false;
       }
+      try {
+        sessionStorage.removeItem(TEL_TRACK_KEY);
+      } catch (e) { /* ignore */ }
       sendGa4Event("tel_click", {
         event_category: "engagement",
         event_label: "manual_test",
@@ -352,7 +293,8 @@
         value: 1,
         lead_source: "manual_test"
       });
-      console.info("Eventi inviati a", CONFIG.ga4Id, "— apri GA4 Realtime.");
+      markSessionTracked(TEL_TRACK_KEY);
+      console.info("Eventi test inviati a", CONFIG.ga4Id, "— apri GA4 Realtime.");
       return true;
     }
   };
@@ -361,11 +303,6 @@
   var earlyChoice = readChoice();
   if (earlyChoice === "granted") applyConsent(true);
   else if (earlyChoice === "denied") applyConsent(false);
-
-  /* Debug ufficiale Google: …/fabbro.html#google-wcc-debug */
-  if (/google-wcc-debug/i.test(location.hash || "") && earlyChoice === "granted") {
-    refreshPhoneConversion();
-  }
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", function () {

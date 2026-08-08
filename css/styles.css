@@ -2180,6 +2180,25 @@ a:hover { color: var(--rust-deep); }
 .footer-legal a:hover,
 .footer-legal button:hover { color: #e8a878; }
 
+.footer-credit {
+  margin: 0;
+  padding: 0 1.15rem 1.35rem;
+  text-align: center;
+  font-size: .72rem;
+  letter-spacing: .04em;
+  color: rgba(243, 237, 228, .38);
+}
+.footer-credit a {
+  color: rgba(243, 237, 228, .55);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(232, 168, 120, .35);
+}
+.footer-credit a:hover {
+  color: #e8a878;
+  border-bottom-color: #e8a878;
+}
+
 /* space for floating Chiama on mobile */
 @media (max-width: 719px) {
   .site-footer { padding-bottom: 5.5rem; }
@@ -2639,3 +2658,4 @@ body.cookie-open .sticky-call { display: none; }
   border-color: #fff;
   color: #fff;
 }
+
