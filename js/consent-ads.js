@@ -26,7 +26,8 @@
     phoneConversionNumber: "388 809 1482",
     /** GA4 — flusso SoS */
     ga4Id: "G-N643STDFRS",
-    storageKey: "sos_consent_v1"
+    /** v2 = riprompt dopo aggiornamento testo banner cookie */
+    storageKey: "sos_consent_v2"
   };
 
   var REAL_TEL = "tel:+393888091482";

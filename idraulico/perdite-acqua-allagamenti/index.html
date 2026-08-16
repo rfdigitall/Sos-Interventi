@@ -418,7 +418,7 @@
   <script>
     document.getElementById("y").textContent = new Date().getFullYear();
     document.getElementById("reopen-cookies").addEventListener("click", function () {
-      try { localStorage.removeItem("sos_consent_v1"); } catch (e) {}
+      try { localStorage.removeItem("sos_consent_v1"); localStorage.removeItem("sos_consent_v2"); } catch (e) {}
       location.reload();
     });
   </script>
