@@ -21,6 +21,9 @@
     adsId: "AW-18330400186",
     /** Click tel — conversione al click su Chiama / tel: */
     conversionSendTo: "AW-18330400186/dAXnCJzgr9ocELrrzqRE",
+    /** DNI reale — chiamate dalle visite al sito web */
+    phoneConversionSendTo: "AW-18330400186/RVS9CNri3uIcELrrzqRE",
+    phoneConversionNumber: "388 809 1482",
     /** GA4 — flusso SoS */
     ga4Id: "G-N643STDFRS",
     storageKey: "sos_consent_v1"
@@ -300,6 +303,11 @@
   };
 
   loadGtag();
+if (CONFIG.phoneConversionSendTo && typeof window.gtag === "function") {
+  gtag("config", CONFIG.phoneConversionSendTo, {
+    phone_conversion_number: CONFIG.phoneConversionNumber
+  });
+}
   var earlyChoice = readChoice();
   if (earlyChoice === "granted") applyConsent(true);
   else if (earlyChoice === "denied") applyConsent(false);
