@@ -108,6 +108,12 @@
     if (granted) {
       configGa4({ send_page_view: true });
       if (CONFIG.adsId) gtag("config", CONFIG.adsId);
+      /* DNI — solo dopo ad_storage granted (Accetta o early-choice) */
+      if (CONFIG.phoneConversionSendTo && typeof window.gtag === "function") {
+        gtag("config", CONFIG.phoneConversionSendTo, {
+          phone_conversion_number: CONFIG.phoneConversionNumber
+        });
+      }
     }
   }
 
@@ -304,11 +310,6 @@
   };
 
   loadGtag();
-if (CONFIG.phoneConversionSendTo && typeof window.gtag === "function") {
-  gtag("config", CONFIG.phoneConversionSendTo, {
-    phone_conversion_number: CONFIG.phoneConversionNumber
-  });
-}
   var earlyChoice = readChoice();
   if (earlyChoice === "granted") applyConsent(true);
   else if (earlyChoice === "denied") applyConsent(false);
