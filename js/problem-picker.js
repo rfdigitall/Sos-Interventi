@@ -4,8 +4,8 @@
 (function () {
   "use strict";
 
-  var WA = "393888091482";
-  var TEL = "tel:+393888091482";
+  var WA = "393717945477";
+  var TEL = "tel:+393717945477";
 
   var form = document.getElementById("problem-form");
   if (!form) return;
