@@ -6,8 +6,10 @@
  * Website call (forwarding): AW-18330400186/18xyCMu1wuccELrrzqRE
  * GA4: G-N643STDFRS
  *
- * Ads traffic: early marketing consent + Google Call Forwarding (DNI)
- * with anti-flicker (hide digits until swap / timeout).
+ * 26/08/2026: DNI / inoltro Google DISATTIVATO (stesso fix GF).
+ * call_view aveva MISSED mentre il cliente diceva telefono muto.
+ * Ora tel: va DIRETTO a 371 794 5477. Click tel resta attivo.
+ * Per riattivare DNI: rimetti phoneConversionSendTo sotto.
  */
 (function () {
   "use strict";
@@ -15,7 +17,8 @@
   var CONFIG = {
     adsId: "AW-18330400186",
     conversionSendTo: "AW-18330400186/dAXnCJzgr9ocELrrzqRE",
-    phoneConversionSendTo: "AW-18330400186/18xyCMu1wuccELrrzqRE",
+    /** VUOTO = niente sostituzione numero Google (chiamata diretta) */
+    phoneConversionSendTo: "",
     phoneConversionNumber: "371 794 5477",
     phoneDigits: "3717945477",
     ga4Id: "G-N643STDFRS",
@@ -100,6 +103,7 @@
   };
 
   function armAntiFlicker() {
+    if (!CONFIG.phoneConversionSendTo) return;
     if (!isAdsTraffic()) return;
     if (document.getElementById("sos-dni-af-style")) return;
     var css =
@@ -199,12 +203,7 @@
           phone_conversion_callback: applyWcmNumber
         });
       }
-      if (CONFIG.conversionSendTo) {
-        gtag("set", {
-          phone_conversion_number: CONFIG.phoneConversionNumber,
-          phone_conversion_ids: [CONFIG.conversionSendTo]
-        });
-      }
+      /* Click tel only — no phone_conversion_number when DNI is off */
     }
   }
 
