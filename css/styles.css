@@ -14,8 +14,8 @@
   --radius: 4px;
   --radius-cta: 4px 4px 4px 22px;
   --max: 68rem;
-  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
-  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-display: Georgia, "Times New Roman", serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
 *,
