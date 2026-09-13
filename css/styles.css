@@ -2343,7 +2343,8 @@ a:hover { color: var(--rust-deep); }
 
 .cookie__actions button:hover { opacity: .92; }
 
-body.cookie-open .sticky-call { display: none; }
+/* sticky call stays visible with cookie — callability > banner */
+body.cookie-open .sticky-call { display: flex; }
 
 @media (min-width: 720px) {
   .cookie {
@@ -2659,3 +2660,32 @@ body.cookie-open .sticky-call { display: none; }
   color: #fff;
 }
 
+
+
+/* QS BOOST sticky bar */
+@media (max-width: 719px) {
+  .sticky-call {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: .65rem .75rem calc(.65rem + env(safe-area-inset-bottom));
+    background: rgba(15, 31, 24, .96);
+    gap: .5rem;
+    justify-content: stretch;
+    pointer-events: auto;
+  }
+  .sticky-call__tel {
+    flex: 1 1 auto;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    padding: 1rem 1rem;
+  }
+  .sticky-call__wa {
+    border-radius: 10px;
+    width: 56px;
+    height: auto;
+    min-height: 52px;
+  }
+  .site-footer { padding-bottom: 6.5rem; }
+}
