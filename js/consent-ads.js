@@ -9,7 +9,8 @@
  * 26/08/2026: DNI / inoltro Google DISATTIVATO (stesso fix GF).
  * call_view aveva MISSED mentre il cliente diceva telefono muto.
  * Ora tel: va DIRETTO a 371 794 5477. Click tel resta attivo.
- * Per riattivare DNI: rimetti phoneConversionSendTo sotto.
+ * 13/09/2026: WEBSITE_CALL Ads REMOVED (388+371 forwarding) — stop 0371 Google.
+ * Per riattivare DNI: rimetti phoneConversionSendTo sotto + ricrea WEBSITE_CALL.
  */
 (function () {
   "use strict";
