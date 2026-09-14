@@ -2662,30 +2662,22 @@ body.cookie-open .sticky-call { display: flex; }
 
 
 
-/* QS BOOST sticky bar */
-@media (max-width: 719px) {
-  .sticky-call {
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: .65rem .75rem calc(.65rem + env(safe-area-inset-bottom));
-    background: rgba(15, 31, 24, .96);
-    gap: .5rem;
-    justify-content: stretch;
-    pointer-events: auto;
-  }
-  .sticky-call__tel {
-    flex: 1 1 auto;
-    justify-content: center;
-    border-radius: 10px;
-    font-size: 1.05rem;
-    padding: 1rem 1rem;
-  }
-  .sticky-call__wa {
-    border-radius: 10px;
-    width: 56px;
-    height: auto;
-    min-height: 52px;
-  }
-  .site-footer { padding-bottom: 6.5rem; }
+/* Sticky: pill, not full-bleed — full bar was easy to tap by accident (dialer opens, call never starts) */
+.sticky-call__tel {
+  flex-direction: column;
+  gap: 0;
+  line-height: 1.05;
+}
+.sticky-call__tel small {
+  display: block;
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+  opacity: .85;
+}
+.idra-dial small {
+  letter-spacing: .04em;
+  text-transform: none;
+  max-width: 16rem;
+  text-align: center;
 }
