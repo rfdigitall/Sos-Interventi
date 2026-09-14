@@ -303,6 +303,15 @@
     return String(href || "").trim().toLowerCase().replace(/[\s\-\u00a0().]/g, "");
   }
 
+  function isExplicitCallCta(a) {
+    if (!a || !a.classList) return false;
+    return a.classList.contains("idra-dial")
+      || a.classList.contains("sticky-call__tel")
+      || a.classList.contains("nav-tel")
+      || a.classList.contains("footer-tel")
+      || a.classList.contains("home-contact__call");
+  }
+
   function isOurTelLink(a) {
     if (!a || !a.getAttribute) return false;
     if (a.getAttribute("data-sos-phone") === "1") return true;
@@ -330,6 +339,8 @@
 
     var a = ev.target && ev.target.closest ? ev.target.closest('a[href^="tel:"]') : null;
     if (!isOurTelLink(a)) return;
+    /* Only the real call buttons. Problem tiles used to open the dialer on a casual tap and got counted as Click tel with no call. */
+    if (!isExplicitCallCta(a)) return;
     if (sessionAlreadyTracked(TEL_TRACK_KEY)) return;
 
     if (canTrackMarketing() && readChoice() !== "granted") {

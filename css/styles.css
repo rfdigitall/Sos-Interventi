@@ -2675,6 +2675,7 @@ body.cookie-open .sticky-call { display: flex; }
   letter-spacing: .02em;
   opacity: .85;
 }
+#chiama { scroll-margin-top: 5.5rem; }
 .idra-dial small {
   letter-spacing: .04em;
   text-transform: none;
