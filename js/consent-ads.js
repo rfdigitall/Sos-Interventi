@@ -305,11 +305,18 @@
 
   function isExplicitCallCta(a) {
     if (!a || !a.classList) return false;
-    return a.classList.contains("idra-dial")
+    if (a.classList.contains("idra-dial")
       || a.classList.contains("sticky-call__tel")
       || a.classList.contains("nav-tel")
       || a.classList.contains("footer-tel")
-      || a.classList.contains("home-contact__call");
+      || a.classList.contains("home-contact__call")) {
+      return true;
+    }
+    /* FAQ "Tocca e chiama" links — intentional dial, not problem tiles */
+    try {
+      if (a.closest && a.closest(".idra-faq__cta, .sos-faq__cta")) return true;
+    } catch (e) { /* ignore */ }
+    return false;
   }
 
   function isOurTelLink(a) {
@@ -334,6 +341,29 @@
     gtag("event", name, payload);
   }
 
+  function forceNativeDial(a, ev) {
+    /* Google App / Ads in-app WebView often swallows plain <a href="tel:">.
+       preventDefault + location.href is the reliable path to the dialer. */
+    if (!a || !isExplicitCallCta(a) || !isOurTelLink(a)) return false;
+    if (ev && typeof ev.button === "number" && ev.button !== 0) return false;
+    var href = normalizeTelHref(a.getAttribute("href")) || REAL_TEL_NORM;
+    if (href.indexOf("tel:") !== 0) href = REAL_TEL_NORM;
+    try {
+      if (ev) {
+        ev.preventDefault();
+        if (typeof ev.stopPropagation === "function") ev.stopPropagation();
+      }
+    } catch (e) { /* ignore */ }
+    try {
+      window.location.href = href;
+    } catch (e2) {
+      try {
+        window.location.assign(href);
+      } catch (e3) { /* ignore */ }
+    }
+    return true;
+  }
+
   function trackTelConversion(ev) {
     if (ev && typeof ev.button === "number" && ev.button !== 0) return;
 
@@ -341,6 +371,10 @@
     if (!isOurTelLink(a)) return;
     /* Only the real call buttons. Problem tiles used to open the dialer on a casual tap and got counted as Click tel with no call. */
     if (!isExplicitCallCta(a)) return;
+
+    /* Always force dial on explicit CTA — even if we already tracked this session. */
+    forceNativeDial(a, ev);
+
     if (sessionAlreadyTracked(TEL_TRACK_KEY)) return;
 
     if (canTrackMarketing() && readChoice() !== "granted") {
