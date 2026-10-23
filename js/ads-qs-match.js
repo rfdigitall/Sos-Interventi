@@ -8,7 +8,7 @@
   if (window.__gfAdsQsMatch) return;
   window.__gfAdsQsMatch = true;
 
-  var VER = "20261014soscity";
+  var VER = "20261023sosricerca";
   var lastApplied = "";
 
   function params() {
@@ -32,6 +32,7 @@
     var path = (location.pathname || "").toLowerCase();
     if (path.indexOf("basculanti") >= 0 || path.indexOf("tapparelle") >= 0) return "tapparelle";
     if (path.indexOf("scarichi") >= 0) return "scarichi";
+    if (path.indexOf("ricerca-perdite") >= 0) return "ricerca";
     if (path.indexOf("perdite") >= 0) return "perdite";
     if (path.indexOf("fabbro") >= 0) return "fabbro";
     if (path.indexOf("idraulico") >= 0) return "idraulico";
@@ -52,13 +53,22 @@
 
   var BASE = {
     idraulico: {
-      eyebrow: "Idraulico urgente · Pronto intervento · H24",
-      title: "Idraulico Urgente — Pronto Intervento H24",
+      eyebrow: "Intervento idraulico · Pronto intervento · H24",
+      title: "Intervento Idraulico Urgente H24",
       titleCity: function (c) {
-        return "Idraulico Urgente H24 a " + c;
+        return "Intervento Idraulico Urgente a " + c;
       },
       sub: "Perdite · tubo rotto · scarichi otturati · WC intasato",
-      meta: "Idraulico urgente H24: pronto intervento per perdite, tubo rotto, scarichi e WC intasato. Chiama 371 794 5477.",
+      meta: "Intervento idraulico urgente H24: perdite, tubo rotto, scarichi e WC intasato. Chiama 371 794 5477.",
+    },
+    ricerca: {
+      eyebrow: "Ricerca perdite acqua · Perdite occulte",
+      title: "Ricerca Perdite Acqua Occulte",
+      titleCity: function (c) {
+        return "Ricerca Perdite Acqua a " + c;
+      },
+      sub: "Perdita nel muro o sotto il pavimento? Troviamo il punto e ripariamo.",
+      meta: "Ricerca perdite acqua occulte a domicilio: muro, pavimento, contatore che gira. Veneto e Friuli. Chiama 371 794 5477.",
     },
     scarichi: {
       eyebrow: "Scarico otturato · WC intasato · Spurgo H24",
@@ -88,17 +98,47 @@
       meta: "Fabbro urgente H24: apertura porte, serrature, tapparelle e basculanti. Chiama 371 794 5477.",
     },
     tapparelle: {
-      eyebrow: "Basculanti · Tapparelle · Serrande · H24",
-      title: "Pronto Intervento Basculanti e Tapparelle H24",
+      eyebrow: "Tapparelle · Serrande · Basculanti · H24",
+      title: "Riparazione Tapparelle e Basculanti Urgente",
       titleCity: function (c) {
-        return "Basculanti e Tapparelle Urgenti a " + c;
+        return "Riparazione Tapparelle e Basculanti a " + c;
       },
-      sub: "Basculante, garage o tapparella bloccata? Non forzare — chiama.",
-      meta: "Pronto intervento basculanti e tapparelle H24. Chiama 371 794 5477.",
+      sub: "Tapparella bloccata, serranda o basculante garage? Non forzare — chiama.",
+      meta: "Riparazione tapparelle, serrande e basculanti urgente H24. Chiama 371 794 5477.",
     },
   };
 
   var RULES = [
+    {
+      re: /ricerca perdit|ricerca fughe|perdit[ae] occult|perdita nascost|perdita (acqua |d acqua |di acqua )?(nel muro|sotto (il )?pavimento|sotto traccia)|tubo rotto (nel muro|sotto)|localizzazione perdit/,
+      eyebrow: "Ricerca perdite acqua · Perdite occulte",
+      title: "Ricerca Perdite Acqua Occulte",
+      titleCity: function (c) {
+        return "Ricerca Perdite Acqua a " + c;
+      },
+      sub: "Perdita nel muro o sotto il pavimento? Troviamo il punto e ripariamo.",
+      meta: "Ricerca perdite acqua occulte a domicilio. Chiama 371 794 5477.",
+    },
+    {
+      re: /riparazione tapparell|tapparella rotta|riparare tapparell/,
+      eyebrow: "Riparazione tapparelle · H24",
+      title: "Riparazione Tapparelle Urgente",
+      titleCity: function (c) {
+        return "Riparazione Tapparelle a " + c;
+      },
+      sub: "Tapparella bloccata, cinghia o molla rotta · intervento a domicilio",
+      meta: "Riparazione tapparelle urgente a domicilio. Chiama 371 794 5477.",
+    },
+    {
+      re: /riparazione serrand|serranda bloccat|riparazione basculant|basculante bloccat|basculante non si apre/,
+      eyebrow: "Serrande · Basculanti garage · H24",
+      title: "Riparazione Serrande e Basculanti",
+      titleCity: function (c) {
+        return "Riparazione Serrande e Basculanti a " + c;
+      },
+      sub: "Serranda o basculante garage bloccata · intervento urgente",
+      meta: "Riparazione serrande e basculanti garage urgente. Chiama 371 794 5477.",
+    },
     {
       re: /wc intas|wc ottur|water ottur|water non scarica|disintasare wc|water intas|pronto intervento wc/,
       eyebrow: "WC intasato · Spurgo urgente · H24",
@@ -130,7 +170,7 @@
       meta: "Perdita d'acqua e allagamento: intervento urgente H24. Chiama 371 794 5477.",
     },
     {
-      re: /intervento idraulico|pronto intervento idraulico|idraulico pronto intervento/,
+      re: /pronto intervento idraulico|idraulico pronto intervento/,
       eyebrow: "Pronto intervento idraulico · H24",
       title: "Pronto Intervento Idraulico H24",
       titleCity: function (c) {
@@ -138,6 +178,16 @@
       },
       sub: "Intervento idraulico · perdite · scarichi",
       meta: "Pronto intervento idraulico H24 in zona. Chiama 371 794 5477.",
+    },
+    {
+      re: /intervento idraulico/,
+      eyebrow: "Intervento idraulico · H24",
+      title: "Intervento Idraulico Urgente H24",
+      titleCity: function (c) {
+        return "Intervento Idraulico Urgente a " + c;
+      },
+      sub: "Perdite · tubo rotto · scarichi otturati · WC intasato",
+      meta: "Intervento idraulico urgente H24 in zona. Chiama 371 794 5477.",
     },
     {
       re: /idraulico urgente|idraulico h24|idraulico 24|idraulico emergenza|idraulico di emergenza|emergenza idraulico|idraulico reperibile|idraulico subito|idraulico adesso|idraulico notte|chiamare idraulico|sos idraulico/,
