@@ -10,6 +10,8 @@
  * call_view aveva MISSED mentre il cliente diceva telefono muto.
  * Ora tel: va DIRETTO a 371 794 5477. Click tel resta attivo.
  * 13/09/2026: WEBSITE_CALL Ads REMOVED (388+371 forwarding) — stop 0371 Google.
+ * 24/10/2026: forceMarketingConsentForAds=false (GDPR). Default denied fino ad Accetta;
+ * il banner non copre più il pulsante Chiama su mobile.
  * Per riattivare DNI: rimetti phoneConversionSendTo sotto + ricrea WEBSITE_CALL.
  */
 (function () {
@@ -24,7 +26,13 @@
     phoneDigits: "3717945477",
     ga4Id: "G-N643STDFRS",
     storageKey: "sos_consent_v2",
-    forceMarketingConsentForAds: true
+    /* 24/10/2026: false. Nessun consenso automatico per il traffico Ads:
+       Consent Mode v2 resta "denied" finché il visitatore non clicca Accetta. */
+    forceMarketingConsentForAds: false,
+    /* Consent Mode v2 "advanced": senza consenso il click su Chiama invia a Google
+       solo un ping anonimo senza cookie (conversione modellata). Metti false per
+       non inviare nulla prima del consenso ("basic"). */
+    cookielessPingsWhenDenied: true
   };
 
   var REAL_TEL = "tel:+393717945477";
@@ -234,16 +242,33 @@
     }
   }
 
+  function liftStickyCall(px) {
+    try {
+      document.documentElement.style.setProperty("--sos-cookie-h", px ? px + "px" : "0px");
+    } catch (e) {}
+  }
+
   function hideBanner() {
     var el = document.getElementById("cookie-banner");
     if (el) el.hidden = true;
     document.body.classList.remove("cookie-open");
+    liftStickyCall(0);
   }
 
   function showBanner() {
     var el = document.getElementById("cookie-banner");
     if (el) el.hidden = false;
     document.body.classList.add("cookie-open");
+    /* keep the Chiama pill visible above the banner on mobile */
+    try {
+      var panel = el && el.querySelector(".cookie__panel");
+      var measure = function () {
+        if (!el || el.hidden) return;
+        liftStickyCall(Math.ceil((panel || el).getBoundingClientRect().height) + 16);
+      };
+      measure();
+      window.addEventListener("resize", measure);
+    } catch (e) {}
   }
 
   function initBanner() {
@@ -334,7 +359,8 @@
 
   function sendGa4Event(name, params) {
     if (!CONFIG.ga4Id || typeof window.gtag !== "function") return;
-    if (!canTrackMarketing()) return;
+    /* gtag rispetta lo stato Consent Mode: senza consenso nessun cookie viene scritto */
+    if (!canTrackMarketing() && !CONFIG.cookielessPingsWhenDenied) return;
     var payload = params || {};
     payload.send_to = CONFIG.ga4Id;
     payload.transport_type = "beacon";
@@ -377,11 +403,7 @@
 
     if (sessionAlreadyTracked(TEL_TRACK_KEY)) return;
 
-    if (canTrackMarketing() && readChoice() !== "granted") {
-      saveChoice("granted");
-      applyConsent(true);
-    }
-    if (!canTrackMarketing()) return;
+    if (!canTrackMarketing() && !CONFIG.cookielessPingsWhenDenied) return;
 
     markSessionTracked(TEL_TRACK_KEY);
 

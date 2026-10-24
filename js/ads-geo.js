@@ -1,27 +1,22 @@
 /**
- * Ads geo line — EmergenzeCasa-style.
+ * Ads geo line — v20261024sos.
  * Reads city= / area= from Google Ads ValueTrack (loc_physical_ms / loc_interest_ms)
- * or a city name (?city=Treviso). Does not use GPS.
+ * or a city name (?city=Treviso). Whitelist = js/geo-ne.js (Veneto + FVG only).
+ * All text is written with textContent (no HTML injection). Does not use GPS.
  */
 (function () {
+  /* GF_GEO_NE values: "Nome" = comune/località, "prov:Nome" = provincia, "reg:Nome" = regione.
+     Only Veneto + Friuli Venezia Giulia are in the map (whitelist): anything else = neutral text. */
   var MAP = window.GF_GEO_NE || {};
-  var REGIONS = { Veneto: 1, "Friuli-Venezia Giulia": 1 };
-  var ALIAS = {
-    "Metropolitan City of Venice": "Venezia",
-    "Padua City Centre": "Padova",
-    "Venezia Mestre": "Mestre",
-    "Municipalita di Mestre-Carpenedo": "Mestre",
-    "San Dona di Piave": "San Donà di Piave",
-    "Scorze": "Scorzè",
-  };
+  var REGIONS = { Veneto: 1, "Friuli Venezia Giulia": 1, "Friuli-Venezia Giulia": 1 };
+  /* Comuni whose name is also a common word: never inferred from the search keyword. */
+  var KW_SKIP = { mira: 1, grado: 1, tessera: 1, este: 1, dolo: 1, arre: 1, lusia: 1, cona: 1, fonte: 1, torre: 1, ponte: 1, porto: 1, villa: 1, campo: 1, fiesso: 1, one: 1, casale: 1 };
 
   try {
     var css = document.createElement("style");
     css.textContent =
       ".gf-geo-avail{display:block;margin:2px 0 14px;font-size:14px;font-weight:500;letter-spacing:0.01em;line-height:1.4;color:rgba(255,255,255,0.78);max-width:26rem}.gf-geo-avail[hidden]{display:none!important}" +
-      /* When green live chip carries the city, hide duplicate geo line */
       "body.gf-has-live-avail .gf-geo-avail{display:none!important}" +
-      /* Ads visitors: no exits from the header, only logo + phone */
       ".ads-traffic .site-header .nav-links{display:none!important}";
     (document.head || document.documentElement).appendChild(css);
   } catch (e) {}
@@ -36,96 +31,126 @@
 
   function decodeVal(v) {
     if (!v) return "";
+    var out = String(v);
     try {
-      return decodeURIComponent(String(v).replace(/\+/g, " ")).trim();
-    } catch (e) {
-      return String(v).trim();
+      out = decodeURIComponent(out.replace(/\+/g, " "));
+    } catch (e) {}
+    return out.trim().slice(0, 120);
+  }
+
+  function norm(s) {
+    var t = String(s || "").toLowerCase();
+    try { t = t.normalize("NFD"); } catch (e) {}
+    return t.replace(/[\u0300-\u036f]/g, "")
+      .replace(/['’`\-_.]/g, " ").replace(/\s+/g, " ").trim();
+  }
+
+  function parse(v) {
+    if (!v) return null;
+    if (v.indexOf("prov:") === 0) return { name: v.slice(5), kind: "prov" };
+    if (v.indexOf("reg:") === 0) return { name: v.slice(4), kind: "reg" };
+    return { name: v, kind: "place" };
+  }
+
+  /* name index (normalized) built once from the whitelist */
+  var BY_NAME = null;
+  function byName() {
+    if (BY_NAME) return BY_NAME;
+    BY_NAME = {};
+    for (var k in MAP) {
+      if (!Object.prototype.hasOwnProperty.call(MAP, k)) continue;
+      var e = parse(MAP[k]);
+      var key = norm(e.name);
+      if (e.kind === "place" || !BY_NAME[key]) BY_NAME[key] = e;
     }
-  }
-
-  function titleCity(s) {
-    return s.replace(/\b\w/g, function (c) {
-      return c.toUpperCase();
-    });
-  }
-
-  function aliasName(n) {
-    if (!n) return "";
-    return ALIAS[n] || n;
+    BY_NAME["venice"] = BY_NAME["venezia"];
+    BY_NAME["padua"] = BY_NAME["padova"];
+    return BY_NAME;
   }
 
   function fromIdOrName(raw) {
     var v = decodeVal(raw);
-    if (!v) return "";
-    if (/^\d+$/.test(v)) return aliasName(MAP[v] || "");
-    var named = titleCity(v);
-    if (ALIAS[named]) return ALIAS[named];
-    var values = Object.keys(MAP).map(function (k) {
-      return MAP[k];
-    });
-    var hit = values.find(function (n) {
-      return n.toLowerCase() === named.toLowerCase();
-    });
-    return aliasName(hit || "");
+    if (!v) return null;
+    if (/^\d{4,10}$/.test(v)) return parse(MAP[v] || "");
+    if (!/^[A-Za-z\u00C0-\u017F '’.\-]{2,60}$/.test(v)) return null;
+    return byName()[norm(v)] || null;
   }
 
+  var KW_NAMES = null;
   function fromKeyword(raw) {
-    var kw = decodeVal(raw).toLowerCase();
-    if (!kw || kw.length < 4) return "";
-    var names = [];
-    var seen = {};
-    Object.keys(MAP).forEach(function (id) {
-      var n = MAP[id];
-      if (!n || REGIONS[n] || seen[n]) return;
-      seen[n] = 1;
-      names.push(n);
-    });
-    names.sort(function (a, b) {
-      return b.length - a.length;
-    });
-    for (var i = 0; i < names.length; i++) {
-      var n = names[i];
-      var re = new RegExp("(?:^|\\s)" + n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?:\\s|$)", "i");
-      if (re.test(kw)) return n;
+    var kw = " " + norm(decodeVal(raw)).replace(/[+\[\]"]/g, " ") + " ";
+    if (kw.length < 6) return null;
+    if (!KW_NAMES) {
+      var idx = byName();
+      KW_NAMES = Object.keys(idx).filter(function (n) {
+        return idx[n] && idx[n].kind === "place" && n.length >= 3 && !KW_SKIP[n];
+      }).sort(function (a, b) { return b.length - a.length; });
     }
-    return "";
+    for (var i = 0; i < KW_NAMES.length; i++) {
+      if (kw.indexOf(" " + KW_NAMES[i] + " ") >= 0) return byName()[KW_NAMES[i]];
+    }
+    return null;
   }
 
-  function pickCity(p) {
+  function pickPlace(p) {
     var interest = fromIdOrName(p.get("area"));
     var physical = fromIdOrName(p.get("city") || p.get("citta"));
     var kw = fromKeyword(p.get("utm_keyword") || p.get("utm_term") || p.get("kw"));
-    function ok(n) {
-      return n && !REGIONS[n];
-    }
-    if (ok(interest)) return interest;
-    if (ok(physical)) return physical;
-    if (ok(kw)) return kw;
-    if (interest) return interest;
-    if (physical) return physical;
-    return "";
+    /* searched place (area / city named in the keyword) beats where the phone is */
+    var order = [interest, kw, physical];
+    var i;
+    for (i = 0; i < order.length; i++) if (order[i] && order[i].kind === "place") return order[i];
+    for (i = 0; i < order.length; i++) if (order[i] && order[i].kind === "prov") return order[i];
+    for (i = 0; i < order.length; i++) if (order[i] && order[i].kind === "reg") return order[i];
+    return null;
   }
 
-  function lineText(city) {
-    if (!city) return "";
-    /* Calm trust line — H1 already has the city; night fallback when live chip is hidden */
-    if (REGIONS[city]) return "Rispondiamo noi in " + city + " — senza call center.";
-    return "Rispondiamo noi a " + city + " — senza call center.";
+  /* "a Verona" / "in provincia di Verona" / "in Veneto" */
+  function locative(pl) {
+    if (!pl) return "";
+    if (pl.kind === "prov") return "in provincia di " + pl.name;
+    if (pl.kind === "reg") return "in " + pl.name;
+    return "a " + pl.name;
   }
 
-  function paintZone(city) {
+  function lineText(pl) {
+    if (!pl || pl.kind === "reg") return "";
+    return "Rispondiamo noi " + locative(pl) + " — senza call center.";
+  }
+
+  function paintZone(pl) {
     var zones = document.querySelectorAll("[data-gf-geo-zone]");
     for (var z = 0; z < zones.length; z++) {
       var el = zones[z];
       if (!el.hasAttribute("data-gf-geo-default")) el.setAttribute("data-gf-geo-default", el.textContent);
-      var want = city && !REGIONS[city] ? city + " e dintorni" : el.getAttribute("data-gf-geo-default");
+      var want = el.getAttribute("data-gf-geo-default");
+      if (pl && pl.kind === "place") want = pl.name + " e dintorni";
+      else if (pl && pl.kind === "prov") want = "Provincia di " + pl.name;
       if (el.textContent !== want) el.textContent = want;
+    }
+    /* inline "vicino a te {in Veneto e Friuli}" -> "a Verona" / "in provincia di Verona" */
+    var locs = document.querySelectorAll("[data-gf-geo-loc]");
+    for (var g = 0; g < locs.length; g++) {
+      var le = locs[g];
+      if (!le.hasAttribute("data-gf-geo-default")) le.setAttribute("data-gf-geo-default", le.textContent);
+      var lt = le.getAttribute("data-gf-geo-default");
+      if (pl && pl.kind !== "reg") lt = locative(pl);
+      if (le.textContent !== lt) le.textContent = lt;
+    }
+    /* footer area line: a visitor from one city sees only their own area */
+    var lists = document.querySelectorAll(".footer-cities");
+    for (var f = 0; f < lists.length; f++) {
+      var li = lists[f];
+      if (!li.hasAttribute("data-gf-geo-default")) li.setAttribute("data-gf-geo-default", li.textContent);
+      var t = li.getAttribute("data-gf-geo-default");
+      if (pl && pl.kind !== "reg") t = "Interventi " + locative(pl) + (pl.kind === "place" ? " e dintorni" : "") + " · Veneto e Friuli Venezia Giulia";
+      if (li.textContent !== t) li.textContent = t;
     }
   }
 
-  function paint(city) {
-    paintZone(city);
-    var text = lineText(city);
+  function paint(pl) {
+    paintZone(pl);
+    var text = lineText(pl);
     var nodes = document.querySelectorAll("[data-gf-geo-avail]");
     for (var i = 0; i < nodes.length; i++) {
       var el = nodes[i];
@@ -134,7 +159,7 @@
         el.textContent = "";
       } else {
         el.hidden = false;
-        el.textContent = text;
+        if (el.textContent !== text) el.textContent = text;
       }
     }
   }
@@ -147,8 +172,11 @@
     } catch (e) {}
   }
 
-  var city = pickCity(p);
-  window.__gfGeoCity = city;
+  var PLACE = pickPlace(p);
+  /* Public API (read by ads-qs-match.js) */
+  window.__gfGeoPlace = PLACE;
+  window.__gfGeoCity = PLACE && PLACE.kind === "place" ? PLACE.name : "";
+  window.__gfGeoLoc = PLACE && PLACE.kind !== "reg" ? locative(PLACE) : "";
 
   window.gfApplyLandingContext = function () {
     if (p.get("gclid") || p.get("gbraid") || p.get("wbraid") || p.get("utm_source")) {
@@ -159,12 +187,11 @@
     return window.__gfGeoCity || "";
   };
 
-  // Re-assert after other deferred scripts (e.g. support.js) may overwrite.
   function assertHook() {
     window.gfApplyLandingContext = function () {
       return window.__gfGeoCity || "";
     };
-    paint(window.__gfGeoCity);
+    paint(PLACE);
   }
 
   /* --- Ads conversion helpers: city on sticky call, searched problem first, WhatsApp prefilled --- */
@@ -174,7 +201,7 @@
   function searchedProblem() {
     var kw = decodeVal(p.get("utm_keyword") || p.get("utm_term") || p.get("kw")).toLowerCase();
     if (!kw) return "";
-    var c = (window.__gfGeoCity || "").toLowerCase();
+    var c = (PLACE ? PLACE.name : "").toLowerCase();
     if (c) kw = kw.replace(new RegExp("(^|\\s)(a |in )?" + c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(\\s|$)", "g"), " ");
     return kw.replace(/[+\[\]"]/g, " ").replace(/\s+/g, " ").trim();
   }
@@ -221,7 +248,7 @@
   }
 
   function stickyCity(city) {
-    if (!city || REGIONS[city]) return;
+    if (!city || REGIONS[city] || city.length > 18) return;
     var a = document.querySelector(".sticky-call__tel");
     if (!a || a.getAttribute("data-gf-city")) return;
     for (var i = a.childNodes.length - 1; i >= 0; i--) {
@@ -257,7 +284,7 @@
 
   var t = 0;
   function run() {
-    paint(window.__gfGeoCity);
+    paint(PLACE);
     if (document.readyState !== "loading") enhance();
   }
   function schedule() {

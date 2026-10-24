@@ -23,7 +23,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="../../img/favicon-192.png">
   <link rel="apple-touch-icon" href="../../img/apple-touch-icon.png">
 
-  <script src="../../js/consent-ads.js?v=8"></script>
+  <script src="../../js/consent-ads.js?v=20261024sos"></script>
   <!-- Google tag (gtag.js) — statico per Tag Assistant / Google Ads -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18330400186" id="gtag-js"></script>
 
@@ -57,7 +57,7 @@
     .idra-wa-btn{display:inline-flex;align-items:center;justify-content:center;min-width:72px;padding:0 1.1rem;background:#25D366;border-radius:4px 28px 4px 4px;text-decoration:none}
     .idra-wa-btn img{width:30px;height:30px;display:block}
   </style>
-  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../css/styles.css?v=20261024sos">
 
   <script type="application/ld+json">
   {
@@ -102,9 +102,9 @@
     ]
   }
   </script>
-  <script src="../../js/geo-ne.js?v=20261014"></script>
-  <script src="../../js/ads-geo.js?v=20261023"></script>
-  <script src="../../js/ads-qs-match.js?v=20261023"></script>
+  <script src="../../js/geo-ne.js?v=20261024sos" defer></script>
+  <script src="../../js/ads-geo.js?v=20261024sos" defer></script>
+  <script src="../../js/ads-qs-match.js?v=20261024sos" defer></script>
 </head>
 <body class="page-idraulico">
   <a class="skip" href="#contenuto">Vai al contenuto</a>
@@ -145,6 +145,11 @@
             </a>
           </div>
           <p class="idra-hero__price">Ti diciamo il costo al telefono, prima di partire.</p>
+          <ul class="sos-hero-trust" aria-label="Perché chiamarci">
+            <li>Risponde una persona, non un call center</li>
+            <li>Urgenze anche di notte e festivi</li>
+            <li>Veneto e Friuli Venezia Giulia</li>
+          </ul>
         </div>
       </div>
     </section>
@@ -174,19 +179,19 @@
     </div>
 
 
-    <section class="idra-problems" aria-labelledby="prob-title">
+    <section id="aqua" class="idra-problems" aria-labelledby="prob-title">
       <div class="wrap idra-wrap">
         <div class="idra-problems__head">
           <p class="section__eyebrow">Riconosci questi segnali?</p>
           <h2 class="section__title" id="prob-title">Perdite acqua in casa: quando chiamare</h2>
         </div>
         <div class="idra-grid idra-grid--full">
-          <a class="idra-tile idra-tile--hot" href="#chiama">
+          <a id="tubi" class="idra-tile idra-tile--hot" href="#chiama">
             <span class="idra-tile__k">01</span>
             <strong>Tubo che perde acqua</strong>
             <em>Chiama →</em>
           </a>
-          <a class="idra-tile" href="#chiama">
+          <a id="infiltrazioni" class="idra-tile" href="#chiama">
             <span class="idra-tile__k">02</span>
             <strong>Macchia di umidità sul soffitto</strong>
             <em>Chiama →</em>
@@ -215,7 +220,34 @@
       </div>
     </section>
 
-    <section class="idra-midcta" aria-label="Chiama ora">
+    <section class="idra-tips sos-serr" aria-labelledby="alla-title">
+      <div class="wrap idra-wrap">
+        <div class="idra-tips__head">
+          <p class="section__eyebrow">Pronto intervento allagamenti</p>
+          <h2 id="alla-title">Allagamento, acqua dal soffitto, tubo che perde</h2>
+        </div>
+        <div class="idra-tips__grid">
+          <article id="allagamento">
+            <span>01</span>
+            <h3>Allagamento in casa</h3>
+            <p>Acqua sul pavimento da un tubo o da un flessibile: chiudi il contatore e chiamaci. Fermiamo la perdita e ripariamo il punto danneggiato.</p>
+          </article>
+          <article id="soffitto">
+            <span>02</span>
+            <h3>Acqua dal soffitto</h3>
+            <p>Macchia che si allarga o gocce dal soffitto: spesso è un tubo o uno scarico del piano di sopra. Troviamo da dove arriva e ripariamo.</p>
+          </article>
+          <article id="riparazione">
+            <span>03</span>
+            <h3>Riparazione perdita acqua urgente</h3>
+            <p>Tubo che perde, raccordo o giunto che gocciola: riparazione urgente del tratto danneggiato. Il costo te lo diciamo al telefono, prima di partire.</p>
+          </article>
+        </div>
+        <p class="idra-faq__cta sos-serr__cta"><a href="tel:+393717945477">Chiama 371 794 5477 →</a></p>
+      </div>
+    </section>
+
+    <section id="sos" class="idra-midcta" aria-label="Chiama ora">
       <div class="wrap idra-wrap idra-midcta__inner">
         <div>
           <p class="idra-midcta__label">Perdita in corso</p>
@@ -233,7 +265,7 @@
       </div>
     </section>
 
-    <section class="idra-tips" aria-labelledby="tips-title">
+    <section id="stop" class="idra-tips" aria-labelledby="tips-title">
       <div class="wrap idra-wrap">
         <div class="idra-tips__head">
           <p class="section__eyebrow">Come interveniamo</p>
@@ -255,7 +287,6 @@
             <h3>Chiama 371 794 5477</h3>
             <p>Descrivi dove perde e da quanto. Intervento in Veneto e Friuli, anche di notte e nei festivi per emergenze vere.</p>
           </article>
-        </div>
         </div>
       </div>
     </section>
@@ -355,7 +386,7 @@
           <img loading="lazy" src="../../img/logo-sos-420.webp" alt="Sos Interventi" width="160" height="85" decoding="async">
         </a>
         <p>Pronto intervento <strong>fabbro</strong> e <strong>idraulico</strong> in <strong>Veneto</strong> e <strong>Friuli</strong>. Disponibili <strong>24/7</strong> per urgenze reali.</p>
-        <p class="footer-cities">Venezia · Mestre · Treviso · Padova · Vicenza · Verona · Rovigo · Belluno · Udine · Pordenone · Gorizia · Trieste</p>
+        <p class="footer-cities">Interventi in Veneto e Friuli Venezia Giulia</p>
       </div>
       <div>
         <h2>Menu</h2>
@@ -425,7 +456,7 @@
   <div id="cookie-banner" class="cookie" hidden>
     <div class="cookie__panel" role="dialog" aria-labelledby="cookie-title" aria-describedby="cookie-desc">
       <h2 id="cookie-title">Cookie</h2>
-      <p id="cookie-desc">Usiamo cookie tecnici necessari al sito, più cookie di misurazione (Google Ads e Analytics) solo se accetti. Ci aiutano a capire come rispondere meglio a chi ha un'emergenza. Se rifiuti, il sito funziona comunque.</p>
+      <p id="cookie-desc">Usiamo cookie tecnici necessari al sito, più cookie di misurazione (Google Ads e Analytics) solo se accetti. Ci aiutano a capire come rispondere meglio a chi ha un'emergenza. Se rifiuti, il sito funziona comunque. <a href="../../privacy.html">Privacy e cookie</a></p>
       <div class="cookie__actions">
         <button type="button" class="cookie__refuse" id="cookie-refuse">Rifiuta</button>
         <button type="button" class="cookie__accept" id="cookie-accept">Accetta</button>
@@ -433,7 +464,7 @@
     </div>
   </div>
 
-  <script src="../../js/faq-accordion.js" defer></script>
+  <script src="../../js/faq-accordion.js?v=20261024sos" defer></script>
   <script>
     document.getElementById("y").textContent = new Date().getFullYear();
     document.getElementById("reopen-cookies").addEventListener("click", function () {

@@ -8,7 +8,7 @@
   if (window.__gfAdsQsMatch) return;
   window.__gfAdsQsMatch = true;
 
-  var VER = "20261023sosricerca";
+  var VER = "20261024sos";
   var lastApplied = "";
 
   function params() {
@@ -34,6 +34,8 @@
     if (path.indexOf("scarichi") >= 0) return "scarichi";
     if (path.indexOf("ricerca-perdite") >= 0) return "ricerca";
     if (path.indexOf("perdite") >= 0) return "perdite";
+    if (path.indexOf("caldaie") >= 0) return "caldaie";
+    if (path.indexOf("porte-serrature") >= 0) return "serrature";
     if (path.indexOf("fabbro") >= 0) return "fabbro";
     if (path.indexOf("idraulico") >= 0) return "idraulico";
     return "idraulico";
@@ -43,233 +45,244 @@
     return decodeVal(p.get("utm_keyword") || p.get("utm_term") || p.get("kw")).toLowerCase();
   }
 
-  function cityName() {
+  /* "a Verona" / "in provincia di Verona" — set by ads-geo.js from the whitelist only */
+  function cityLoc() {
     try {
-      return window.__gfGeoCity || (window.gfApplyLandingContext && window.gfApplyLandingContext()) || "";
+      return window.__gfGeoLoc || "";
     } catch (e) {
       return "";
     }
   }
 
+  function T(head) {
+    return function (loc) {
+      return head + " " + loc;
+    };
+  }
+
+  /* Default copy per page (no keyword). Title = H1, sub = lead, meta = description. */
   var BASE = {
     idraulico: {
       eyebrow: "Intervento idraulico · Pronto intervento · H24",
       title: "Intervento Idraulico Urgente H24",
-      titleCity: function (c) {
-        return "Intervento Idraulico Urgente a " + c;
-      },
+      titleCity: T("Intervento Idraulico Urgente"),
       sub: "Perdite · tubo rotto · scarichi otturati · WC intasato",
-      meta: "Intervento idraulico urgente H24: perdite, tubo rotto, scarichi e WC intasato. Chiama 371 794 5477.",
+      meta: "Intervento idraulico urgente H24 in Veneto e Friuli Venezia Giulia: perdite, tubo rotto, scarichi e WC intasato. Chiama 371 794 5477.",
     },
     ricerca: {
       eyebrow: "Ricerca perdite acqua · Perdite occulte",
       title: "Ricerca Perdite Acqua Occulte",
-      titleCity: function (c) {
-        return "Ricerca Perdite Acqua a " + c;
-      },
-      sub: "Perdita nel muro o sotto il pavimento? Troviamo il punto e ripariamo.",
-      meta: "Ricerca perdite acqua occulte a domicilio: muro, pavimento, contatore che gira. Veneto e Friuli. Chiama 371 794 5477.",
+      titleCity: T("Ricerca Perdite Acqua"),
+      sub: "Ricerca perdita acqua nel muro o sotto il pavimento: troviamo il punto e ripariamo, aprendo solo dove serve.",
+      meta: "Ricerca perdite acqua occulte a domicilio: perdita sotto pavimento, tubo rotto nel muro, contatore che gira. Veneto e Friuli Venezia Giulia. Chiama 371 794 5477.",
     },
     scarichi: {
       eyebrow: "Scarico otturato · WC intasato · Spurgo H24",
-      title: "Scarico Otturato Urgente — Sturiamo Ora",
-      titleCity: function (c) {
-        return "Scarico Otturato Urgente a " + c;
-      },
-      sub: "WC intasato · lavandino otturato · spurgo urgente",
-      meta: "Scarico otturato e WC intasato: spurgo urgente H24. Chiama 371 794 5477.",
+      title: "Scarico Otturato e WC Intasato — Spurgo Urgente",
+      titleCity: T("Scarico Otturato e WC Intasato"),
+      sub: "WC intasato · lavandino otturato · spurgo e disotturazione scarichi",
+      meta: "Scarico otturato e WC intasato: spurgo e disotturazione urgente H24 in Veneto e Friuli Venezia Giulia. Chiama 371 794 5477.",
     },
     perdite: {
-      eyebrow: "Perdita acqua · Tubo rotto · Allagamento",
-      title: "Perdita d'Acqua Urgente — Tubo Rotto",
-      titleCity: function (c) {
-        return "Perdita d'Acqua Urgente a " + c;
-      },
-      sub: "Tubo rotto · allagamento · perdita urgente",
-      meta: "Perdita d'acqua e tubo rotto: pronto intervento H24. Chiama 371 794 5477.",
+      eyebrow: "Perdite acqua in casa · Tubo rotto · Allagamento",
+      title: "Perdite Acqua in Casa — Intervento Urgente",
+      titleCity: T("Perdite Acqua in Casa: Intervento Urgente"),
+      sub: "Tubo che perde · macchia sul soffitto · allagamento",
+      meta: "Perdite acqua in casa, tubo rotto e allagamento: pronto intervento idraulico H24. Chiama 371 794 5477.",
+    },
+    caldaie: {
+      eyebrow: "Caldaia · Scaldabagno · Pronto intervento",
+      title: "Pronto Intervento Caldaia e Scaldabagno",
+      titleCity: T("Pronto Intervento Caldaia"),
+      sub: "Caldaia in blocco, senza acqua calda o scaldabagno che perde? Chiama.",
+      meta: "Pronto intervento caldaia e scaldabagno: caldaia in blocco, niente acqua calda, perdite. Chiama 371 794 5477.",
+    },
+    serrature: {
+      eyebrow: "Fabbro · Porte e serrature · H24",
+      title: "Serratura Bloccata o Rotta? Fabbro Urgente",
+      titleCity: T("Fabbro per Serrature e Porte Blindate"),
+      sub: "Serratura rotta o bloccata · porta blindata · chiave spezzata · sostituzione serratura",
+      meta: "Fabbro urgente per serratura bloccata o rotta, porte blindate e sostituzione serrature. Veneto e Friuli Venezia Giulia. Chiama 371 794 5477.",
     },
     fabbro: {
-      eyebrow: "Fabbro urgente · Apertura porte · Tapparelle · H24",
+      eyebrow: "Fabbro urgente · Apertura porte · H24",
       title: "Fabbro Urgente — Pronto Intervento H24",
-      titleCity: function (c) {
-        return "Fabbro Urgente H24 a " + c;
-      },
-      sub: "Apertura porte · serratura · tapparelle · basculanti",
-      meta: "Fabbro urgente H24: apertura porte, serrature, tapparelle e basculanti. Chiama 371 794 5477.",
+      titleCity: T("Fabbro Pronto Intervento"),
+      sub: "Apertura porte · serrature · cilindri · porte blindate",
+      meta: "Fabbro pronto intervento H24: apertura porte, serrature, cilindri e porte blindate. Chiama 371 794 5477.",
     },
     tapparelle: {
       eyebrow: "Tapparelle · Serrande · Basculanti · H24",
       title: "Riparazione Tapparelle e Basculanti Urgente",
-      titleCity: function (c) {
-        return "Riparazione Tapparelle e Basculanti a " + c;
-      },
-      sub: "Tapparella bloccata, serranda o basculante garage? Non forzare — chiama.",
+      titleCity: T("Riparazione Tapparelle e Basculanti"),
+      sub: "Tapparella bloccata, cinghia rotta, serranda o basculante garage? Non forzare — chiama.",
       meta: "Riparazione tapparelle, serrande e basculanti urgente H24. Chiama 371 794 5477.",
     },
   };
 
+  /* Keyword -> copy. Order matters: most specific first. */
   var RULES = [
     {
       re: /ricerca perdit|ricerca fughe|perdit[ae] occult|perdita nascost|perdita (acqua |d acqua |di acqua )?(nel muro|sotto (il )?pavimento|sotto traccia)|tubo rotto (nel muro|sotto)|localizzazione perdit/,
       eyebrow: "Ricerca perdite acqua · Perdite occulte",
       title: "Ricerca Perdite Acqua Occulte",
-      titleCity: function (c) {
-        return "Ricerca Perdite Acqua a " + c;
-      },
-      sub: "Perdita nel muro o sotto il pavimento? Troviamo il punto e ripariamo.",
+      titleCity: T("Ricerca Perdite Acqua Occulte"),
+      sub: "Perdita sotto il pavimento o tubo rotto nel muro? Troviamo il punto e ripariamo.",
       meta: "Ricerca perdite acqua occulte a domicilio. Chiama 371 794 5477.",
     },
     {
-      re: /riparazione tapparell|tapparella rotta|riparare tapparell/,
+      re: /cinghia|molla tapparell|tapparella (rott|bloccat|non (sale|scende))|riparazione tapparell|riparare tapparell|tapparelle? rott/,
       eyebrow: "Riparazione tapparelle · H24",
       title: "Riparazione Tapparelle Urgente",
-      titleCity: function (c) {
-        return "Riparazione Tapparelle a " + c;
-      },
-      sub: "Tapparella bloccata, cinghia o molla rotta · intervento a domicilio",
-      meta: "Riparazione tapparelle urgente a domicilio. Chiama 371 794 5477.",
+      titleCity: T("Riparazione Tapparelle"),
+      sub: "Tapparella non scende o non sale, cinghia o molla tapparella rotta · intervento a domicilio",
+      meta: "Riparazione tapparelle urgente a domicilio: cinghia, molla, tapparella bloccata. Chiama 371 794 5477.",
     },
     {
-      re: /riparazione serrand|serranda bloccat|riparazione basculant|basculante bloccat|basculante non si apre/,
+      re: /serrand|basculant|garage bloccat|porta garage/,
       eyebrow: "Serrande · Basculanti garage · H24",
       title: "Riparazione Serrande e Basculanti",
-      titleCity: function (c) {
-        return "Riparazione Serrande e Basculanti a " + c;
-      },
+      titleCity: T("Riparazione Serrande e Basculanti"),
       sub: "Serranda o basculante garage bloccata · intervento urgente",
       meta: "Riparazione serrande e basculanti garage urgente. Chiama 371 794 5477.",
     },
     {
-      re: /wc intas|wc ottur|water ottur|water non scarica|disintasare wc|water intas|pronto intervento wc/,
+      re: /tapparell/,
+      eyebrow: "Tapparelle · H24",
+      title: "Tapparelle: Riparazione Urgente",
+      titleCity: T("Riparazione Tapparelle"),
+      sub: "Tapparella bloccata · cinghia o molla rotta · intervento a domicilio",
+      meta: "Tapparelle bloccate o rotte: riparazione urgente. Chiama 371 794 5477.",
+    },
+    {
+      re: /wc intas|wc ottur|water ottur|water non scarica|disintasare wc|water intas|pronto intervento wc|gabinetto intas/,
       eyebrow: "WC intasato · Spurgo urgente · H24",
       title: "WC Intasato — Spurgo Urgente H24",
-      titleCity: function (c) {
-        return "WC Intasato Urgente a " + c;
-      },
+      titleCity: T("WC Intasato: Intervento Urgente"),
       sub: "WC intasato · water otturato · spurgo professionale",
       meta: "WC intasato urgente: spurgo professionale H24. Chiama 371 794 5477.",
     },
     {
-      re: /scarico ottur|scarichi ottur|scarico intas|scarico bloccat|scarico cucina|spurgo scarich|pronto intervento scarich|stasatura|disottur|lavandino ottur|lavandino cucina|lavandino intas|stappare lavandino|fogna ottur|ingorg|otturazione|tubo intasato/,
+      re: /scarico ottur|scarichi ottur|scarico intas|scarico bloccat|scarico cucina|spurgo|sturare|stasatura|disottur|disostru|lavandino ottur|lavandino cucina|lavandino intas|stappare lavandino|fogna ottur|ingorg|otturazione|tubo intasato|tubo di scarico/,
       eyebrow: "Scarico otturato · Spurgo · H24",
       title: "Scarico Otturato — Spurgo Urgente",
-      titleCity: function (c) {
-        return "Scarico Otturato a " + c;
-      },
-      sub: "Scarico otturato · lavandino intasato · spurgo",
+      titleCity: T("Scarico Otturato: Spurgo Urgente"),
+      sub: "Scarico otturato · lavandino intasato · spurgo e disotturazione",
       meta: "Scarico otturato e lavandino intasato: spurgo urgente. Chiama 371 794 5477.",
     },
     {
-      re: /perdita acqua|perdite acqua|allagamento|tubo rotto|tubo scoppiat|tubo che perde|acqua che esce|acqua che perde|riparazione perdita|perdita tubo|tubatura|perdita urgente|emergenza perdita|pronto intervento perdita|pronto intervento allagamento/,
-      eyebrow: "Perdita acqua · Tubo rotto · H24",
-      title: "Perdita d'Acqua Urgente — Tubo Rotto",
-      titleCity: function (c) {
-        return "Perdita d'Acqua a " + c;
-      },
-      sub: "Perdita acqua · tubo rotto · allagamento",
-      meta: "Perdita d'acqua e allagamento: intervento urgente H24. Chiama 371 794 5477.",
+      re: /caldai|scaldabagn|boiler|acqua calda/,
+      eyebrow: "Caldaia · Scaldabagno · Pronto intervento",
+      title: "Pronto Intervento Caldaia e Scaldabagno",
+      titleCity: T("Pronto Intervento Caldaia"),
+      sub: "Caldaia in blocco · niente acqua calda · scaldabagno che perde",
+      meta: "Pronto intervento caldaia e scaldabagno. Chiama 371 794 5477.",
     },
     {
-      re: /pronto intervento idraulico|idraulico pronto intervento/,
-      eyebrow: "Pronto intervento idraulico · H24",
-      title: "Pronto Intervento Idraulico H24",
-      titleCity: function (c) {
-        return "Pronto Intervento Idraulico a " + c;
-      },
-      sub: "Intervento idraulico · perdite · scarichi",
-      meta: "Pronto intervento idraulico H24 in zona. Chiama 371 794 5477.",
+      re: /perdit[ae] acqua|perdite d acqua|allagament|tubo rotto|tubo scoppiat|tubo che perde|acqua che esce|acqua che perde|acqua dal soffitto|riparazione perdit|perdita tubo|tubatur|perdita urgente|emergenza perdit|pronto intervento perdit/,
+      eyebrow: "Perdite acqua · Tubo rotto · H24",
+      title: "Perdite d'Acqua — Intervento Urgente",
+      titleCity: T("Perdite d'Acqua: Intervento Urgente"),
+      sub: "Tubo che perde · acqua dal soffitto · allagamento",
+      meta: "Perdite d'acqua e allagamento: intervento urgente H24. Chiama 371 794 5477.",
     },
     {
-      re: /intervento idraulico/,
-      eyebrow: "Intervento idraulico · H24",
-      title: "Intervento Idraulico Urgente H24",
-      titleCity: function (c) {
-        return "Intervento Idraulico Urgente a " + c;
-      },
-      sub: "Perdite · tubo rotto · scarichi otturati · WC intasato",
-      meta: "Intervento idraulico urgente H24 in zona. Chiama 371 794 5477.",
+      re: /riparazion[ei] (della )?port[ae] blindat|riparare port[ae] blindat/,
+      eyebrow: "Porte blindate · Riparazione · H24",
+      title: "Riparazione Porta Blindata — Fabbro",
+      titleCity: T("Riparazione Porta Blindata"),
+      sub: "Porta blindata bloccata · serratura o cilindro da sostituire · apertura e riparazione",
+      meta: "Riparazione porta blindata: apertura, sostituzione serratura e cilindro. Chiama 371 794 5477.",
     },
     {
-      re: /idraulico urgente|idraulico h24|idraulico 24|idraulico emergenza|idraulico di emergenza|emergenza idraulico|idraulico reperibile|idraulico subito|idraulico adesso|idraulico notte|chiamare idraulico|sos idraulico/,
-      eyebrow: "Idraulico urgente · H24",
-      title: "Idraulico Urgente H24",
-      titleCity: function (c) {
-        return "Idraulico Urgente H24 a " + c;
-      },
-      sub: "Idraulico urgente · pronto intervento",
-      meta: "Idraulico urgente H24: rispondiamo subito. Chiama 371 794 5477.",
+      re: /sostituzion[ei] (della )?serratur|cambio (della )?serratur|cambiare (la )?serratur/,
+      eyebrow: "Sostituzione serrature · Cilindri · H24",
+      title: "Sostituzione Serratura — Fabbro Urgente",
+      titleCity: T("Sostituzione Serratura"),
+      sub: "Serratura rotta, porta normale o blindata · cambio cilindro europeo",
+      meta: "Sostituzione serratura anche su porta blindata, cambio cilindro. Chiama 371 794 5477.",
     },
     {
-      re: /idraulico (udine|pordenone|gorizia|trieste|venezia|treviso|mestre)/,
-      eyebrow: "Idraulico pronto intervento · H24",
-      title: "Idraulico Pronto Intervento H24",
-      titleCity: function (c) {
-        return "Idraulico Pronto Intervento a " + c;
-      },
-      sub: "Pronto intervento idraulico · perdite · scarichi",
-      meta: "Idraulico pronto intervento in zona. Chiama 371 794 5477.",
+      re: /port[ae] blindat|assistenza port/,
+      eyebrow: "Porte blindate · Serrature · H24",
+      title: "Assistenza Porte Blindate — Fabbro",
+      titleCity: T("Assistenza Porte Blindate"),
+      sub: "Porta blindata bloccata · serratura da sostituire · cilindro di sicurezza",
+      meta: "Assistenza porte blindate: apertura, serrature e cilindri. Chiama 371 794 5477.",
     },
     {
-      re: /spurgo lavandino|stappare lavandino|disintasare/,
-      eyebrow: "Spurgo lavandino · H24",
-      title: "Spurgo Lavandino Urgente",
-      titleCity: function (c) {
-        return "Spurgo Lavandino a " + c;
-      },
-      sub: "Spurgo lavandino · scarico intasato",
-      meta: "Spurgo lavandino urgente H24. Chiama 371 794 5477.",
+      re: /cambio cilindr|sostituzione cilindr|cilindro europeo|cilindr|cambio serratur|sostituzione serratur|serratura rott|riparazione serratur/,
+      eyebrow: "Sostituzione serrature · Cilindri",
+      title: "Sostituzione e Riparazione Serrature",
+      titleCity: T("Sostituzione Serrature"),
+      sub: "Serratura rotta · cambio cilindro · porta che non chiude",
+      meta: "Sostituzione e riparazione serrature, cambio cilindro. Chiama 371 794 5477.",
     },
     {
-      re: /chiuso fuori|chiusi fuori|mi sono chiuso|sono chiuso fuori|bloccato fuori|rimasto fuori|rimasto chiuso|porta blindata|porta sbattuta|porta bloccata|serratura bloccat|chiave rotta|chiave spezzat|chiave bloccata|apertura port|sblocco serratur|sblocco porta/,
+      re: /chiuso fuori|chiusi fuori|mi sono chiuso|bloccato fuori|rimasto fuori|rimasto chiuso|porta sbattuta|porta bloccata|serratura bloccat|chiave rotta|chiave spezzat|chiave bloccata|apertura port|sblocco serratur|sblocco porta|apertura serratur/,
       eyebrow: "Apertura porte · Serratura bloccata",
       title: "Apertura Porte Urgente — Fabbro H24",
-      titleCity: function (c) {
-        return "Apertura Porte Urgente a " + c;
-      },
+      titleCity: T("Apertura Porte Urgente"),
       sub: "Chiuso fuori · serratura bloccata · chiave rotta",
       meta: "Apertura porte e serratura bloccata: fabbro H24. Chiama 371 794 5477.",
     },
     {
-      re: /tapparell|basculant|serranda|garage bloccato|molla basculante|riparazione tapparell|sostituzione tapparell/,
-      eyebrow: "Tapparelle · Basculanti · Serrande H24",
-      title: "Tapparella / Basculante Bloccata — Chiama",
-      titleCity: function (c) {
-        return "Tapparelle e Basculanti Urgenti a " + c;
-      },
-      sub: "Tapparella bloccata · basculante · serranda urgente",
-      meta: "Tapparelle, basculanti e serrande bloccate: intervento urgente H24. Chiama 371 794 5477.",
-    },
-    {
-      re: /fabbro urgente|fabbro h24|pronto intervento fabbro|fabbro pronto|intervento fabbro|emergenza fabbro|fabbro 24|fabbro notturno|chiamare fabbro|fabbro apertura/,
+      re: /fabbr/,
       eyebrow: "Fabbro urgente · Pronto intervento · H24",
-      title: "Fabbro Urgente H24",
-      titleCity: function (c) {
-        return "Fabbro Urgente H24 a " + c;
-      },
-      sub: "Fabbro urgente · apertura porte · serrature",
+      title: "Fabbro Pronto Intervento H24",
+      titleCity: T("Fabbro Pronto Intervento"),
+      sub: "Apertura porte · serrature · cilindri · porte blindate",
       meta: "Fabbro urgente e pronto intervento H24. Chiama 371 794 5477.",
     },
     {
-      re: /pronto intervento serratur|pronto intervento chiavi|pronto intervento mestre|pronto intervento (venezia|treviso|udine|pordenone|gorizia|trieste)|apertura serratur/,
-      eyebrow: "Pronto intervento serrature · H24",
-      title: "Pronto Intervento Serrature H24",
-      titleCity: function (c) {
-        return "Pronto Intervento Serrature a " + c;
-      },
-      sub: "Serratura bloccata · apertura · sblocco",
-      meta: "Pronto intervento serrature H24. Chiama 371 794 5477.",
+      re: /riparazion[ei] idraulic|riparare tub|idraulico per riparazion/,
+      eyebrow: "Riparazioni idrauliche · H24",
+      title: "Riparazioni Idrauliche Urgenti",
+      titleCity: T("Riparazioni Idrauliche Urgenti"),
+      sub: "Perdite · rubinetti · flessibili · scarichi",
+      meta: "Riparazioni idrauliche urgenti a domicilio. Chiama 371 794 5477.",
     },
     {
-      re: /cambio cilindro|cilindro europeo|cambio serratur|sostituzione serratur/,
-      eyebrow: "Cambio serratura · Cilindro",
-      title: "Cambio / Sostituzione Serratura",
-      titleCity: function (c) {
-        return "Sostituzione Serratura a " + c;
-      },
-      sub: "Sostituzione serratura · cilindro",
-      meta: "Sostituzione serratura urgente. Chiama 371 794 5477.",
+      re: /pronto intervento idraulic|idraulico pronto intervento/,
+      eyebrow: "Pronto intervento idraulico · H24",
+      title: "Pronto Intervento Idraulico H24",
+      titleCity: T("Pronto Intervento Idraulico"),
+      sub: "Intervento idraulico · perdite · scarichi",
+      meta: "Pronto intervento idraulico H24 in zona. Chiama 371 794 5477.",
+    },
+    {
+      re: /intervento idraulic|interventi idraulic/,
+      eyebrow: "Intervento idraulico · H24",
+      title: "Intervento Idraulico Urgente H24",
+      titleCity: T("Intervento Idraulico Urgente"),
+      sub: "Perdite · tubo rotto · scarichi otturati · WC intasato",
+      meta: "Intervento idraulico urgente H24 in zona. Chiama 371 794 5477.",
+    },
+    {
+      re: /idraulic/,
+      eyebrow: "Idraulico urgente · H24",
+      title: "Idraulico Urgente H24",
+      titleCity: T("Idraulico Urgente H24"),
+      sub: "Idraulico urgente · pronto intervento",
+      meta: "Idraulico urgente H24: rispondiamo subito. Chiama 371 794 5477.",
     },
   ];
+
+  /* A rule may only re-title a page of the same family (no fabbro H1 on the idraulico page). */
+  var FAMILY = { idraulico: "idr", ricerca: "idr", scarichi: "idr", perdite: "idr", caldaie: "idr", fabbro: "fab", serrature: "fab", tapparelle: "tap" };
+  function ruleFamily(r) {
+    var t = r.title.toLowerCase();
+    if (/fabbro|serratur|porte|apertura/.test(t)) return "fab";
+    if (/tapparell|serrand|basculant/.test(t)) return "tap";
+    return "idr";
+  }
+  function fits(kind, r) {
+    var f = FAMILY[kind] || "idr";
+    var rf = ruleFamily(r);
+    if (f === rf) return true;
+    /* the fabbro page also lists tapparelle/serrande */
+    return f === "fab" && rf === "tap";
+  }
 
   function pickCopy(kind, kw) {
     var base = BASE[kind] || BASE.idraulico;
@@ -280,8 +293,10 @@
       sub: base.sub,
       meta: base.meta,
     };
+    /* service pages keep their own service unless the keyword is clearly for it */
     if (kw) {
       for (var i = 0; i < RULES.length; i++) {
+        if (!fits(kind, RULES[i])) continue;
         if (RULES[i].re.test(kw)) {
           pack.eyebrow = RULES[i].eyebrow;
           pack.title = RULES[i].title;
@@ -327,7 +342,9 @@
     var p = params();
     var kind = pageKind();
     var kw = getKeyword(p);
-    var city = cityName();
+    var city = cityLoc();
+    /* No keyword and no known place: keep the page's own static copy (no flicker, same for SEO). */
+    if (!kw && !city) return;
     var copy = pickCopy(kind, kw);
 
     var title = (city && copy.titleCity) ? copy.titleCity(city) : copy.title;

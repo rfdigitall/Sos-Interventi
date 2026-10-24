@@ -23,7 +23,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="../../img/favicon-192.png">
   <link rel="apple-touch-icon" href="../../img/apple-touch-icon.png">
 
-  <script src="../../js/consent-ads.js?v=8"></script>
+  <script src="../../js/consent-ads.js?v=20261024sos"></script>
   <!-- Google tag (gtag.js) — statico per Tag Assistant / Google Ads -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18330400186" id="gtag-js"></script>
 
@@ -57,7 +57,7 @@
     .idra-wa-btn{display:inline-flex;align-items:center;justify-content:center;min-width:72px;padding:0 1.1rem;background:#25D366;border-radius:4px 28px 4px 4px;text-decoration:none}
     .idra-wa-btn img{width:30px;height:30px;display:block}
   </style>
-  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../css/styles.css?v=20261024sos">
 
   <script type="application/ld+json">
   {
@@ -97,9 +97,9 @@
     ]
   }
   </script>
-  <script src="../../js/geo-ne.js?v=20261014"></script>
-  <script src="../../js/ads-geo.js?v=20261023"></script>
-  <script src="../../js/ads-qs-match.js?v=20261023"></script>
+  <script src="../../js/geo-ne.js?v=20261024sos" defer></script>
+  <script src="../../js/ads-geo.js?v=20261024sos" defer></script>
+  <script src="../../js/ads-qs-match.js?v=20261024sos" defer></script>
 </head>
 <body class="page-idraulico">
   <a class="skip" href="#contenuto">Vai al contenuto</a>
@@ -127,7 +127,7 @@
       <div class="idra-hero__inner">
         <div class="idra-hero__copy">
           <span class="idra-hero__eyebrow" id="gf-hero-eyebrow">Idraulico · Scarichi e spurgo</span>
-          <h1 id="gf-hero-title">Scarico otturato? Interveniamo subito</h1>
+          <h1 id="gf-hero-title">Scarico otturato o WC intasato? Interveniamo subito</h1>
                     <p class="gf-geo-avail" data-gf-geo-avail hidden></p>
 <p class="idra-hero__lead" id="gf-hero-sub">WC intasato, lavandino bloccato, scarichi. Idraulico urgente — 371 794 5477.</p>
           <div class="idra-cta idra-cta--center">
@@ -140,6 +140,11 @@
             </a>
           </div>
           <p class="idra-hero__price">Ti diciamo il costo al telefono, prima di partire.</p>
+          <ul class="sos-hero-trust" aria-label="Perché chiamarci">
+            <li>Risponde una persona, non un call center</li>
+            <li>Urgenze anche di notte e festivi</li>
+            <li>Veneto e Friuli Venezia Giulia</li>
+          </ul>
         </div>
       </div>
     </section>
@@ -176,7 +181,7 @@
           <h2 class="section__title" id="prob-title">Quando lo scarico non scende più</h2>
         </div>
         <div class="idra-grid idra-grid--full">
-          <a class="idra-tile idra-tile--hot" href="#chiama">
+          <a id="lavandini" class="idra-tile idra-tile--hot" href="#chiama">
             <span class="idra-tile__k">01</span>
             <strong>Lavandino intasato</strong>
             <em>Chiama →</em>
@@ -210,7 +215,39 @@
       </div>
     </section>
 
-    <section class="idra-midcta" aria-label="Chiama ora">
+    <section class="idra-tips sos-serr" aria-labelledby="dove-title">
+      <div class="wrap idra-wrap">
+        <div class="idra-tips__head">
+          <p class="section__eyebrow">Sturatura e spurgo scarichi</p>
+          <h2 id="dove-title">Dove interveniamo</h2>
+        </div>
+        <div class="idra-tips__grid idra-tips__grid--4">
+          <article id="wc">
+            <span>01</span>
+            <h3>WC intasato</h3>
+            <p>Il water non scarica o l’acqua sale: non tirare di nuovo lo sciacquone. Sturiamo il WC e controlliamo il tratto di scarico.</p>
+          </article>
+          <article id="cucina">
+            <span>02</span>
+            <h3>Lavandino e scarico cucina intasati</h3>
+            <p>Grasso e residui nello scarico della cucina, lavandino del bagno lento: disotturazione del sifone e del tubo di scarico.</p>
+          </article>
+          <article id="doccia">
+            <span>03</span>
+            <h3>Doccia che non scarica</h3>
+            <p>Acqua ferma nel piatto doccia o nella vasca: liberiamo piletta e scarico senza smontare più del necessario.</p>
+          </article>
+          <article id="esterno">
+            <span>04</span>
+            <h3>Scarico esterno otturato</h3>
+            <p>Pozzetto o tubo esterno otturato, ritorni d’acqua o cattivo odore: spurgo e disotturazione della linea.</p>
+          </article>
+        </div>
+        <p class="idra-faq__cta sos-serr__cta"><a href="tel:+393717945477">Chiama 371 794 5477 →</a></p>
+      </div>
+    </section>
+
+    <section id="sos" class="idra-midcta" aria-label="Chiama ora">
       <div class="wrap idra-wrap idra-midcta__inner">
         <div>
           <p class="idra-midcta__label">Scarico bloccato</p>
@@ -235,12 +272,12 @@
           <h2 id="tips-title">Sturatura, spurgo, verifica</h2>
         </div>
         <div class="idra-tips__grid">
-          <article>
+          <article id="disostruzioni">
             <span>01</span>
             <h3>Sturare scarico urgente</h3>
             <p>Lavandino, doccia o piletta bloccati: interveniamo per liberare lo scarico e far scendere di nuovo l’acqua, senza perdere tempo su soluzioni fai-da-te rischiose.</p>
           </article>
-          <article>
+          <article id="pulizie">
             <span>02</span>
             <h3>Spurgo scarichi urgente</h3>
             <p>Se l’ostruzione è più a valle, valutiamo spurgo mirato. Al telefono ci dici cosa non scarica e da quanto: arriviamo preparati in Veneto e Friuli.</p>
@@ -347,7 +384,7 @@
           <img loading="lazy" src="../../img/logo-sos-420.webp" alt="Sos Interventi" width="160" height="85" decoding="async">
         </a>
         <p>Pronto intervento <strong>fabbro</strong> e <strong>idraulico</strong> in <strong>Veneto</strong> e <strong>Friuli</strong>. Disponibili <strong>24/7</strong> per urgenze reali.</p>
-        <p class="footer-cities">Venezia · Mestre · Treviso · Padova · Vicenza · Verona · Rovigo · Belluno · Udine · Pordenone · Gorizia · Trieste</p>
+        <p class="footer-cities">Interventi in Veneto e Friuli Venezia Giulia</p>
       </div>
       <div>
         <h2>Menu</h2>
@@ -416,7 +453,7 @@
   <div id="cookie-banner" class="cookie" hidden>
     <div class="cookie__panel" role="dialog" aria-labelledby="cookie-title" aria-describedby="cookie-desc">
       <h2 id="cookie-title">Cookie</h2>
-      <p id="cookie-desc">Usiamo cookie tecnici necessari al sito, più cookie di misurazione (Google Ads e Analytics) solo se accetti. Ci aiutano a capire come rispondere meglio a chi ha un'emergenza. Se rifiuti, il sito funziona comunque.</p>
+      <p id="cookie-desc">Usiamo cookie tecnici necessari al sito, più cookie di misurazione (Google Ads e Analytics) solo se accetti. Ci aiutano a capire come rispondere meglio a chi ha un'emergenza. Se rifiuti, il sito funziona comunque. <a href="../../privacy.html">Privacy e cookie</a></p>
       <div class="cookie__actions">
         <button type="button" class="cookie__refuse" id="cookie-refuse">Rifiuta</button>
         <button type="button" class="cookie__accept" id="cookie-accept">Accetta</button>
@@ -424,7 +461,7 @@
     </div>
   </div>
 
-  <script src="../../js/faq-accordion.js" defer></script>
+  <script src="../../js/faq-accordion.js?v=20261024sos" defer></script>
   <script>
     document.getElementById("y").textContent = new Date().getFullYear();
     document.getElementById("reopen-cookies").addEventListener("click", function () {

@@ -2368,8 +2368,14 @@ a:hover { color: var(--rust-deep); }
 
 .cookie__actions button:hover { opacity: .92; }
 
-/* sticky call stays visible with cookie — callability > banner */
-body.cookie-open .sticky-call { display: flex; }
+/* sticky call stays visible with cookie — callability > banner.
+   24/10/2026: on mobile the banner covers the bottom, so lift the pill above it
+   (--sos-cookie-h is set by consent-ads.js from the panel height). */
+body.cookie-open .sticky-call {
+  display: flex;
+  z-index: 61;
+  bottom: calc(var(--sos-cookie-h, 0px) + .5rem + env(safe-area-inset-bottom));
+}
 
 @media (min-width: 720px) {
   .cookie {
@@ -2707,3 +2713,42 @@ body.cookie-open .sticky-call { display: flex; }
   max-width: 16rem;
   text-align: center;
 }
+
+/* ——— 24/10/2026 — QS landing: trust chips sotto la CTA hero ——— */
+.sos-hero-trust {
+  list-style: none;
+  margin: .75rem auto 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .4rem .5rem;
+  max-width: 34rem;
+}
+.sos-hero-trust li {
+  font-size: .8rem;
+  line-height: 1.2;
+  font-weight: 600;
+  color: #f3ede4;
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 999px;
+  padding: .32rem .7rem;
+}
+.sos-hero-trust li::before {
+  content: "\2713\00a0";
+  color: #f0c968;
+}
+.sos-serr__cta { margin: 1.25rem 0 0; text-align: center; }
+
+/* sitelink anchors: don't hide the target under the sticky header */
+main [id] { scroll-margin-top: 5.5rem; }
+.sos-serr { background: var(--white, #fff); }
+@media (min-width: 800px) {
+  .idra-tips__grid--4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1100px) {
+  .idra-tips__grid--4 { grid-template-columns: repeat(4, 1fr); }
+}
+.gf-loc { font: inherit; color: inherit; display: inline; margin: 0; }
+.cookie__panel p a { color: var(--forest); text-decoration: underline; font-weight: 600; }
