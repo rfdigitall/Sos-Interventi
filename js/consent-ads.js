@@ -367,10 +367,10 @@
     gtag("event", name, payload);
   }
 
-  function forceNativeDial(a, ev) {
+  function forceNativeDial(a, ev, isTile) {
     /* Google App / Ads in-app WebView often swallows plain <a href="tel:">.
        preventDefault + location.href is the reliable path to the dialer. */
-    if (!a || !isExplicitCallCta(a) || !isOurTelLink(a)) return false;
+    if (!a || !(isTile || isExplicitCallCta(a)) || !isOurTelLink(a)) return false;
     if (ev && typeof ev.button === "number" && ev.button !== 0) return false;
     var href = normalizeTelHref(a.getAttribute("href")) || REAL_TEL_NORM;
     if (href.indexOf("tel:") !== 0) href = REAL_TEL_NORM;
@@ -395,7 +395,13 @@
 
     var a = ev.target && ev.target.closest ? ev.target.closest('a[href^="tel:"]') : null;
     if (!isOurTelLink(a)) return;
-    /* Only the real call buttons. Problem tiles used to open the dialer on a casual tap and got counted as Click tel with no call. */
+    /* 25/10/2026: problem tiles dial directly (1 tap). They open the dialer but are NOT
+       counted as a conversion (casual taps used to inflate "Click tel"). */
+    if (a.classList && a.classList.contains("idra-tile")) {
+      forceNativeDial(a, ev, true);
+      return;
+    }
+    /* Only the real call buttons count as conversion. */
     if (!isExplicitCallCta(a)) return;
 
     /* Always force dial on explicit CTA — even if we already tracked this session. */

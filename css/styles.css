@@ -2387,6 +2387,32 @@ body.cookie-open .sticky-call {
   }
 }
 
+/* 25/10/2026: compact cookie bar on mobile — one slim row at the bottom,
+   so the hero "Chiama ora" and the sticky call pill stay visible. */
+.cookie__short { display: none; }
+@media (max-width: 719px) {
+  .cookie { padding: 0; }
+  .cookie__panel {
+    max-width: none;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    border-radius: 12px 12px 0 0;
+    border-width: 1px 0 0;
+    padding: .55rem .7rem calc(.55rem + env(safe-area-inset-bottom));
+    box-shadow: 0 -6px 24px rgba(31, 26, 23, .14);
+  }
+  .cookie__panel h2 {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; margin: 0;
+  }
+  .cookie__panel p { flex: 1 1 auto; margin: 0; font-size: .74rem; line-height: 1.35; }
+  .cookie__long { display: none; }
+  .cookie__short { display: inline; }
+  .cookie__actions { flex: 0 0 auto; display: flex; gap: .4rem; }
+  .cookie__actions button { font-size: .8rem; padding: .5rem .7rem; min-height: 40px; }
+}
+
 /* ——— Trust strip ——— */
 .trust-strip {
   display: flex;
