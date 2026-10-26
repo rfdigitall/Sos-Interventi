@@ -195,7 +195,7 @@
   }
 
   /* --- Ads conversion helpers: city on sticky call, searched problem first, WhatsApp prefilled --- */
-  var WA_NUM = "393717945477";
+  var WA_NUM = "393888091482";
   var STOP = { per: 1, con: 1, non: 1, che: 1, una: 1, del: 1, della: 1, nel: 1, urgente: 1, urgenti: 1, urgenza: 1, pronto: 1, intervento: 1, interventi: 1, vicino: 1, casa: 1, "24h": 1, h24: 1, fabbro: 1, fabbri: 1, idraulico: 1, idraulici: 1, idraulica: 1, tecnico: 1, servizio: 1, emergenza: 1, subito: 1, domicilio: 1, chiama: 1, acqua: 1 };
 
   function searchedProblem() {

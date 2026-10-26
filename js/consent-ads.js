@@ -8,10 +8,11 @@
  *
  * 26/08/2026: DNI / inoltro Google DISATTIVATO (stesso fix GF).
  * call_view aveva MISSED mentre il cliente diceva telefono muto.
- * Ora tel: va DIRETTO a 371 794 5477. Click tel resta attivo.
+ * Ora tel: va DIRETTO a 388 809 1482. Click tel resta attivo.
  * 13/09/2026: WEBSITE_CALL Ads REMOVED (388+371 forwarding) — stop 0371 Google.
  * 24/10/2026: forceMarketingConsentForAds=false (GDPR). Default denied fino ad Accetta;
  * il banner non copre più il pulsante Chiama su mobile.
+ * 26/10/2026: numero chiamata + WhatsApp passato a 388 809 1482 (test, ok cliente).
  * Per riattivare DNI: rimetti phoneConversionSendTo sotto + ricrea WEBSITE_CALL.
  */
 (function () {
@@ -22,8 +23,8 @@
     conversionSendTo: "AW-18330400186/dAXnCJzgr9ocELrrzqRE",
     /** VUOTO = niente sostituzione numero Google (chiamata diretta) */
     phoneConversionSendTo: "",
-    phoneConversionNumber: "371 794 5477",
-    phoneDigits: "3717945477",
+    phoneConversionNumber: "388 809 1482",
+    phoneDigits: "3888091482",
     ga4Id: "G-N643STDFRS",
     storageKey: "sos_consent_v2",
     /* 24/10/2026: false. Nessun consenso automatico per il traffico Ads:
@@ -35,9 +36,9 @@
     cookielessPingsWhenDenied: true
   };
 
-  var REAL_TEL = "tel:+393717945477";
-  var PHONE_TEXT_RE = /371[\s.\-]?794[\s.\-]?5477/g;
-  var OUR_TEL_RE = /(?:\+?39)?3717945477/;
+  var REAL_TEL = "tel:+393888091482";
+  var PHONE_TEXT_RE = /388[\s.\-]?809[\s.\-]?1482/g;
+  var OUR_TEL_RE = /(?:\+?39)?3888091482/;
   var FALLBACK_MS = 4500;
 
   window.dataLayer = window.dataLayer || [];
@@ -308,7 +309,7 @@
 
   var TEL_TRACK_KEY = "sos_tel_tracked_v1";
   var WA_TRACK_KEY = "sos_wa_tracked_v1";
-  var REAL_TEL_NORM = "tel:+393717945477";
+  var REAL_TEL_NORM = "tel:+393888091482";
 
   function sessionAlreadyTracked(key) {
     try {
@@ -348,13 +349,13 @@
     if (!a || !a.getAttribute) return false;
     if (a.getAttribute("data-sos-phone") === "1") return true;
     var href = normalizeTelHref(a.getAttribute("href"));
-    return href === REAL_TEL_NORM || href === "tel:+393717945477" || OUR_TEL_RE.test(href);
+    return href === REAL_TEL_NORM || href === "tel:+393888091482" || OUR_TEL_RE.test(href);
   }
 
   function isOurWaLink(a) {
     if (!a || !a.getAttribute) return false;
     var href = a.getAttribute("href") || "";
-    return href.indexOf("wa.me/") !== -1 && href.indexOf("393717945477") !== -1;
+    return href.indexOf("wa.me/") !== -1 && href.indexOf("393888091482") !== -1;
   }
 
   function sendGa4Event(name, params) {
@@ -466,8 +467,8 @@
     var was = document.querySelectorAll('a[href*="wa.me/"]');
     for (var i = 0; i < was.length; i++) {
       var href = was[i].getAttribute("href") || "";
-      if (href.indexOf("393717945477") === -1) {
-        was[i].setAttribute("href", "https://wa.me/393717945477");
+      if (href.indexOf("393888091482") === -1) {
+        was[i].setAttribute("href", "https://wa.me/393888091482");
       }
     }
   }

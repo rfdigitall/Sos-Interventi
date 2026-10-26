@@ -67,56 +67,56 @@
       title: "Intervento Idraulico Urgente H24",
       titleCity: T("Intervento Idraulico Urgente"),
       sub: "Perdite · tubo rotto · scarichi otturati · WC intasato",
-      meta: "Intervento idraulico urgente H24 in Veneto e Friuli Venezia Giulia: perdite, tubo rotto, scarichi e WC intasato. Chiama 371 794 5477.",
+      meta: "Intervento idraulico urgente H24 in Veneto e Friuli Venezia Giulia: perdite, tubo rotto, scarichi e WC intasato. Chiama 388 809 1482.",
     },
     ricerca: {
       eyebrow: "Ricerca perdite acqua · Perdite occulte",
       title: "Ricerca Perdite Acqua Occulte",
       titleCity: T("Ricerca Perdite Acqua"),
       sub: "Ricerca perdita acqua nel muro o sotto il pavimento: troviamo il punto e ripariamo, aprendo solo dove serve.",
-      meta: "Ricerca perdite acqua occulte a domicilio: perdita sotto pavimento, tubo rotto nel muro, contatore che gira. Veneto e Friuli Venezia Giulia. Chiama 371 794 5477.",
+      meta: "Ricerca perdite acqua occulte a domicilio: perdita sotto pavimento, tubo rotto nel muro, contatore che gira. Veneto e Friuli Venezia Giulia. Chiama 388 809 1482.",
     },
     scarichi: {
       eyebrow: "Scarico otturato · WC intasato · Spurgo H24",
       title: "Scarico Otturato e WC Intasato — Spurgo Urgente",
       titleCity: T("Scarico Otturato e WC Intasato"),
       sub: "WC intasato · lavandino otturato · spurgo e disotturazione scarichi",
-      meta: "Scarico otturato e WC intasato: spurgo e disotturazione urgente H24 in Veneto e Friuli Venezia Giulia. Chiama 371 794 5477.",
+      meta: "Scarico otturato e WC intasato: spurgo e disotturazione urgente H24 in Veneto e Friuli Venezia Giulia. Chiama 388 809 1482.",
     },
     perdite: {
       eyebrow: "Perdite acqua in casa · Tubo rotto · Allagamento",
       title: "Perdite Acqua in Casa — Intervento Urgente",
       titleCity: T("Perdite Acqua in Casa: Intervento Urgente"),
       sub: "Tubo che perde · macchia sul soffitto · allagamento",
-      meta: "Perdite acqua in casa, tubo rotto e allagamento: pronto intervento idraulico H24. Chiama 371 794 5477.",
+      meta: "Perdite acqua in casa, tubo rotto e allagamento: pronto intervento idraulico H24. Chiama 388 809 1482.",
     },
     caldaie: {
       eyebrow: "Caldaia · Scaldabagno · Pronto intervento",
       title: "Pronto Intervento Caldaia e Scaldabagno",
       titleCity: T("Pronto Intervento Caldaia"),
       sub: "Caldaia in blocco, senza acqua calda o scaldabagno che perde? Chiama.",
-      meta: "Pronto intervento caldaia e scaldabagno: caldaia in blocco, niente acqua calda, perdite. Chiama 371 794 5477.",
+      meta: "Pronto intervento caldaia e scaldabagno: caldaia in blocco, niente acqua calda, perdite. Chiama 388 809 1482.",
     },
     serrature: {
       eyebrow: "Fabbro · Porte e serrature · H24",
       title: "Serratura Bloccata o Rotta? Fabbro Urgente",
       titleCity: T("Fabbro per Serrature e Porte Blindate"),
       sub: "Serratura rotta o bloccata · porta blindata · chiave spezzata · sostituzione serratura",
-      meta: "Fabbro urgente per serratura bloccata o rotta, porte blindate e sostituzione serrature. Veneto e Friuli Venezia Giulia. Chiama 371 794 5477.",
+      meta: "Fabbro urgente per serratura bloccata o rotta, porte blindate e sostituzione serrature. Veneto e Friuli Venezia Giulia. Chiama 388 809 1482.",
     },
     fabbro: {
       eyebrow: "Fabbro urgente · Apertura porte · H24",
       title: "Fabbro Urgente — Pronto Intervento H24",
       titleCity: T("Fabbro Pronto Intervento"),
       sub: "Apertura porte · serrature · cilindri · porte blindate",
-      meta: "Fabbro pronto intervento H24: apertura porte, serrature, cilindri e porte blindate. Chiama 371 794 5477.",
+      meta: "Fabbro pronto intervento H24: apertura porte, serrature, cilindri e porte blindate. Chiama 388 809 1482.",
     },
     tapparelle: {
       eyebrow: "Tapparelle · Serrande · Basculanti · H24",
       title: "Riparazione Tapparelle e Basculanti Urgente",
       titleCity: T("Riparazione Tapparelle e Basculanti"),
       sub: "Tapparella bloccata, cinghia rotta, serranda o basculante garage? Non forzare — chiama.",
-      meta: "Riparazione tapparelle, serrande e basculanti urgente H24. Chiama 371 794 5477.",
+      meta: "Riparazione tapparelle, serrande e basculanti urgente H24. Chiama 388 809 1482.",
     },
   };
 
@@ -128,7 +128,7 @@
       title: "Ricerca Perdite Acqua Occulte",
       titleCity: T("Ricerca Perdite Acqua Occulte"),
       sub: "Perdita sotto il pavimento o tubo rotto nel muro? Troviamo il punto e ripariamo.",
-      meta: "Ricerca perdite acqua occulte a domicilio. Chiama 371 794 5477.",
+      meta: "Ricerca perdite acqua occulte a domicilio. Chiama 388 809 1482.",
     },
     {
       re: /cinghia|molla tapparell|tapparella (rott|bloccat|non (sale|scende))|riparazione tapparell|riparare tapparell|tapparelle? rott/,
@@ -136,7 +136,7 @@
       title: "Riparazione Tapparelle Urgente",
       titleCity: T("Riparazione Tapparelle"),
       sub: "Tapparella non scende o non sale, cinghia o molla tapparella rotta · intervento a domicilio",
-      meta: "Riparazione tapparelle urgente a domicilio: cinghia, molla, tapparella bloccata. Chiama 371 794 5477.",
+      meta: "Riparazione tapparelle urgente a domicilio: cinghia, molla, tapparella bloccata. Chiama 388 809 1482.",
     },
     {
       re: /serrand|basculant|garage bloccat|porta garage/,
@@ -144,7 +144,7 @@
       title: "Riparazione Serrande e Basculanti",
       titleCity: T("Riparazione Serrande e Basculanti"),
       sub: "Serranda o basculante garage bloccata · intervento urgente",
-      meta: "Riparazione serrande e basculanti garage urgente. Chiama 371 794 5477.",
+      meta: "Riparazione serrande e basculanti garage urgente. Chiama 388 809 1482.",
     },
     {
       re: /tapparell/,
@@ -152,7 +152,7 @@
       title: "Tapparelle: Riparazione Urgente",
       titleCity: T("Riparazione Tapparelle"),
       sub: "Tapparella bloccata · cinghia o molla rotta · intervento a domicilio",
-      meta: "Tapparelle bloccate o rotte: riparazione urgente. Chiama 371 794 5477.",
+      meta: "Tapparelle bloccate o rotte: riparazione urgente. Chiama 388 809 1482.",
     },
     {
       re: /wc intas|wc ottur|water ottur|water non scarica|disintasare wc|water intas|pronto intervento wc|gabinetto intas/,
@@ -160,7 +160,7 @@
       title: "WC Intasato — Spurgo Urgente H24",
       titleCity: T("WC Intasato: Intervento Urgente"),
       sub: "WC intasato · water otturato · spurgo professionale",
-      meta: "WC intasato urgente: spurgo professionale H24. Chiama 371 794 5477.",
+      meta: "WC intasato urgente: spurgo professionale H24. Chiama 388 809 1482.",
     },
     {
       re: /scarico ottur|scarichi ottur|scarico intas|scarico bloccat|scarico cucina|spurgo|sturare|stasatura|disottur|disostru|lavandino ottur|lavandino cucina|lavandino intas|stappare lavandino|fogna ottur|ingorg|otturazione|tubo intasato|tubo di scarico/,
@@ -168,7 +168,7 @@
       title: "Scarico Otturato — Spurgo Urgente",
       titleCity: T("Scarico Otturato: Spurgo Urgente"),
       sub: "Scarico otturato · lavandino intasato · spurgo e disotturazione",
-      meta: "Scarico otturato e lavandino intasato: spurgo urgente. Chiama 371 794 5477.",
+      meta: "Scarico otturato e lavandino intasato: spurgo urgente. Chiama 388 809 1482.",
     },
     {
       re: /caldai|scaldabagn|boiler|acqua calda/,
@@ -176,7 +176,7 @@
       title: "Pronto Intervento Caldaia e Scaldabagno",
       titleCity: T("Pronto Intervento Caldaia"),
       sub: "Caldaia in blocco · niente acqua calda · scaldabagno che perde",
-      meta: "Pronto intervento caldaia e scaldabagno. Chiama 371 794 5477.",
+      meta: "Pronto intervento caldaia e scaldabagno. Chiama 388 809 1482.",
     },
     {
       re: /perdit[ae] acqua|perdite d acqua|allagament|tubo rotto|tubo scoppiat|tubo che perde|acqua che esce|acqua che perde|acqua dal soffitto|riparazione perdit|perdita tubo|tubatur|perdita urgente|emergenza perdit|pronto intervento perdit/,
@@ -184,7 +184,7 @@
       title: "Perdite d'Acqua — Intervento Urgente",
       titleCity: T("Perdite d'Acqua: Intervento Urgente"),
       sub: "Tubo che perde · acqua dal soffitto · allagamento",
-      meta: "Perdite d'acqua e allagamento: intervento urgente H24. Chiama 371 794 5477.",
+      meta: "Perdite d'acqua e allagamento: intervento urgente H24. Chiama 388 809 1482.",
     },
     {
       re: /riparazion[ei] (della )?port[ae] blindat|riparare port[ae] blindat/,
@@ -192,7 +192,7 @@
       title: "Riparazione Porta Blindata — Fabbro",
       titleCity: T("Riparazione Porta Blindata"),
       sub: "Porta blindata bloccata · serratura o cilindro da sostituire · apertura e riparazione",
-      meta: "Riparazione porta blindata: apertura, sostituzione serratura e cilindro. Chiama 371 794 5477.",
+      meta: "Riparazione porta blindata: apertura, sostituzione serratura e cilindro. Chiama 388 809 1482.",
     },
     {
       re: /sostituzion[ei] (della )?serratur|cambio (della )?serratur|cambiare (la )?serratur/,
@@ -200,7 +200,7 @@
       title: "Sostituzione Serratura — Fabbro Urgente",
       titleCity: T("Sostituzione Serratura"),
       sub: "Serratura rotta, porta normale o blindata · cambio cilindro europeo",
-      meta: "Sostituzione serratura anche su porta blindata, cambio cilindro. Chiama 371 794 5477.",
+      meta: "Sostituzione serratura anche su porta blindata, cambio cilindro. Chiama 388 809 1482.",
     },
     {
       re: /port[ae] blindat|assistenza port/,
@@ -208,7 +208,7 @@
       title: "Assistenza Porte Blindate — Fabbro",
       titleCity: T("Assistenza Porte Blindate"),
       sub: "Porta blindata bloccata · serratura da sostituire · cilindro di sicurezza",
-      meta: "Assistenza porte blindate: apertura, serrature e cilindri. Chiama 371 794 5477.",
+      meta: "Assistenza porte blindate: apertura, serrature e cilindri. Chiama 388 809 1482.",
     },
     {
       re: /cambio cilindr|sostituzione cilindr|cilindro europeo|cilindr|cambio serratur|sostituzione serratur|serratura rott|riparazione serratur/,
@@ -216,7 +216,7 @@
       title: "Sostituzione e Riparazione Serrature",
       titleCity: T("Sostituzione Serrature"),
       sub: "Serratura rotta · cambio cilindro · porta che non chiude",
-      meta: "Sostituzione e riparazione serrature, cambio cilindro. Chiama 371 794 5477.",
+      meta: "Sostituzione e riparazione serrature, cambio cilindro. Chiama 388 809 1482.",
     },
     {
       re: /chiuso fuori|chiusi fuori|mi sono chiuso|bloccato fuori|rimasto fuori|rimasto chiuso|porta sbattuta|porta bloccata|serratura bloccat|chiave rotta|chiave spezzat|chiave bloccata|apertura port|sblocco serratur|sblocco porta|apertura serratur/,
@@ -224,7 +224,7 @@
       title: "Apertura Porte Urgente — Fabbro H24",
       titleCity: T("Apertura Porte Urgente"),
       sub: "Chiuso fuori · serratura bloccata · chiave rotta",
-      meta: "Apertura porte e serratura bloccata: fabbro H24. Chiama 371 794 5477.",
+      meta: "Apertura porte e serratura bloccata: fabbro H24. Chiama 388 809 1482.",
     },
     {
       re: /fabbr/,
@@ -232,7 +232,7 @@
       title: "Fabbro Pronto Intervento H24",
       titleCity: T("Fabbro Pronto Intervento"),
       sub: "Apertura porte · serrature · cilindri · porte blindate",
-      meta: "Fabbro urgente e pronto intervento H24. Chiama 371 794 5477.",
+      meta: "Fabbro urgente e pronto intervento H24. Chiama 388 809 1482.",
     },
     {
       re: /riparazion[ei] idraulic|riparare tub|idraulico per riparazion/,
@@ -240,7 +240,7 @@
       title: "Riparazioni Idrauliche Urgenti",
       titleCity: T("Riparazioni Idrauliche Urgenti"),
       sub: "Perdite · rubinetti · flessibili · scarichi",
-      meta: "Riparazioni idrauliche urgenti a domicilio. Chiama 371 794 5477.",
+      meta: "Riparazioni idrauliche urgenti a domicilio. Chiama 388 809 1482.",
     },
     {
       re: /pronto intervento idraulic|idraulico pronto intervento/,
@@ -248,7 +248,7 @@
       title: "Pronto Intervento Idraulico H24",
       titleCity: T("Pronto Intervento Idraulico"),
       sub: "Intervento idraulico · perdite · scarichi",
-      meta: "Pronto intervento idraulico H24 in zona. Chiama 371 794 5477.",
+      meta: "Pronto intervento idraulico H24 in zona. Chiama 388 809 1482.",
     },
     {
       re: /intervento idraulic|interventi idraulic/,
@@ -256,7 +256,7 @@
       title: "Intervento Idraulico Urgente H24",
       titleCity: T("Intervento Idraulico Urgente"),
       sub: "Perdite · tubo rotto · scarichi otturati · WC intasato",
-      meta: "Intervento idraulico urgente H24 in zona. Chiama 371 794 5477.",
+      meta: "Intervento idraulico urgente H24 in zona. Chiama 388 809 1482.",
     },
     {
       re: /idraulic/,
@@ -264,7 +264,7 @@
       title: "Idraulico Urgente H24",
       titleCity: T("Idraulico Urgente H24"),
       sub: "Idraulico urgente · pronto intervento",
-      meta: "Idraulico urgente H24: rispondiamo subito. Chiama 371 794 5477.",
+      meta: "Idraulico urgente H24: rispondiamo subito. Chiama 388 809 1482.",
     },
   ];
 
@@ -330,11 +330,11 @@
 
   function setDocTitle(title) {
     if (!title) return;
-    var t = title + " | Chiama 371 794 5477";
+    var t = title + " | Chiama 388 809 1482";
     if (document.title !== t) document.title = t;
     var ogt = document.querySelectorAll('meta[property="og:title"]');
     for (var i = 0; i < ogt.length; i++) {
-      ogt[i].setAttribute("content", title + " — Chiama 371 794 5477");
+      ogt[i].setAttribute("content", title + " — Chiama 388 809 1482");
     }
   }
 
