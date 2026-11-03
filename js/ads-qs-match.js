@@ -1,5 +1,5 @@
 /**
- * Ads message match - v20261103qs
+ * Ads message match - v20261103call
  *
  * Every page ships with its own strong static H1, title and meta description (good with no JavaScript, good for SEO).
  * When a visit comes from an ad with a keyword and/or a known place, this script only adapts the hero:
@@ -14,7 +14,7 @@
   if (window.__gfAdsQsMatch) return;
   window.__gfAdsQsMatch = true;
 
-  var VER = "20261103qs";
+  var VER = "20261103call";
   var PHONE = "388 809 1482";
   var lastApplied = "";
 
@@ -184,14 +184,14 @@
         title: "Lavandino o doccia che non scaricano",
         eyebrow: "Scarichi lenti o bloccati",
         sub: "Acqua ferma o scarico lento? Dicci quale scarico e da quanto.",
-        meta: "Lavandino o doccia che non scaricano? Sturatura e spurgo a domicilio. Chiama il " + PHONE + "."
+        meta: "Lavandino o doccia che non scaricano? Idraulico a domicilio. Chiama il " + PHONE + "."
       },
       {
-        re: /spurgo|stur|stasatur|disostru|disottur|ottur|intas|bloccat|ingorg/,
-        title: "Sturatura e spurgo scarichi",
+        re: /ottur|intas|bloccat|ingorg|stur|stasatur|disostru|disottur/,
+        title: "Scarico otturato",
         eyebrow: "Scarichi otturati",
-        sub: "Scarico bloccato o che gorgoglia? Dicci cosa non scende e da quanto.",
-        meta: "Sturatura e spurgo di scarichi otturati a domicilio. Chiama o scrivi su WhatsApp: " + PHONE + "."
+        sub: "WC, lavandino o doccia che non scendono? Non versare prodotti: chiamaci.",
+        meta: "Scarico otturato o WC intasato? Idraulico a domicilio. Chiama o scrivi su WhatsApp: " + PHONE + "."
       }
     ],
     caldaie: [
@@ -270,6 +270,13 @@
         meta: "Chiave spezzata nella serratura? Estraiamo il pezzo e, se serve, cambiamo il cilindro. Chiama il " + PHONE + "."
       },
       {
+        re: /porta bloccata|porta che non si apre/,
+        title: "Porta bloccata",
+        eyebrow: "Apertura porte",
+        sub: "Porta che non si apre? Non forzarla. Chiamaci e dicci che porta hai.",
+        meta: "Porta bloccata? Fabbro a domicilio: apriamo e sistemiamo la serratura. Chiama il " + PHONE + "."
+      },
+      {
         re: /serratur|cilindr|fabbr|porta|chiave/,
         title: "Serratura bloccata o rotta",
         eyebrow: "Porte e serrature",
@@ -291,6 +298,13 @@
         eyebrow: "Basculanti e serrande",
         sub: "Garage che non si apre? Non forzare: dicci cosa succede.",
         meta: "Basculante o serranda del garage bloccati? Riparazione a domicilio. Chiama il " + PHONE + "."
+      },
+      {
+        re: /riparazion[ei] tapparell/,
+        title: "Riparazione tapparelle",
+        eyebrow: "Tapparelle",
+        sub: "Non sale, non scende o scende storta? Non forzarla: chiamaci.",
+        meta: "Riparazione tapparelle a domicilio. Non forzarla: chiama il " + PHONE + " o scrivi su WhatsApp."
       },
       {
         re: /tapparell/,
