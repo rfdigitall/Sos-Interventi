@@ -1,8 +1,10 @@
 /**
- * Ads geo line — v20261024sos.
+ * Ads geo context - v20261029lp.
  * Reads city= / area= from Google Ads ValueTrack (loc_physical_ms / loc_interest_ms)
  * or a city name (?city=Treviso). Whitelist = js/geo-ne.js (Veneto + FVG only).
- * All text is written with textContent (no HTML injection). Does not use GPS.
+ * Writes the place into the zone, footer and sticky call (textContent only, no HTML injection).
+ * It no longer writes a second subtitle line under the H1: the hero copy is set once by ads-qs-match.js.
+ * Does not use GPS.
  */
 (function () {
   /* GF_GEO_NE values: "Nome" = comune/località, "prov:Nome" = provincia, "reg:Nome" = regione.
@@ -12,12 +14,10 @@
   /* Comuni whose name is also a common word: never inferred from the search keyword. */
   var KW_SKIP = { mira: 1, grado: 1, tessera: 1, este: 1, dolo: 1, arre: 1, lusia: 1, cona: 1, fonte: 1, torre: 1, ponte: 1, porto: 1, villa: 1, campo: 1, fiesso: 1, one: 1, casale: 1 };
 
+  /* .ads-traffic hides the service nav; the class is also set by the inline head script, so no layout jump. */
   try {
     var css = document.createElement("style");
-    css.textContent =
-      ".gf-geo-avail{display:block;margin:2px 0 14px;font-size:14px;font-weight:500;letter-spacing:0.01em;line-height:1.4;color:rgba(255,255,255,0.78);max-width:26rem}.gf-geo-avail[hidden]{display:none!important}" +
-      "body.gf-has-live-avail .gf-geo-avail{display:none!important}" +
-      ".ads-traffic .site-header .nav-links{display:none!important}";
+    css.textContent = ".ads-traffic .site-header .nav-links{display:none!important}";
     (document.head || document.documentElement).appendChild(css);
   } catch (e) {}
 
@@ -113,11 +113,6 @@
     return "a " + pl.name;
   }
 
-  function lineText(pl) {
-    if (!pl || pl.kind === "reg") return "";
-    return "Rispondiamo noi " + locative(pl) + " — senza call center.";
-  }
-
   function paintZone(pl) {
     var zones = document.querySelectorAll("[data-gf-geo-zone]");
     for (var z = 0; z < zones.length; z++) {
@@ -128,7 +123,7 @@
       else if (pl && pl.kind === "prov") want = "Provincia di " + pl.name;
       if (el.textContent !== want) el.textContent = want;
     }
-    /* inline "vicino a te {in Veneto e Friuli}" -> "a Verona" / "in provincia di Verona" */
+    /* inline "{in Veneto e Friuli Venezia Giulia}" -> "a Verona" / "in provincia di Verona" */
     var locs = document.querySelectorAll("[data-gf-geo-loc]");
     for (var g = 0; g < locs.length; g++) {
       var le = locs[g];
@@ -143,25 +138,13 @@
       var li = lists[f];
       if (!li.hasAttribute("data-gf-geo-default")) li.setAttribute("data-gf-geo-default", li.textContent);
       var t = li.getAttribute("data-gf-geo-default");
-      if (pl && pl.kind !== "reg") t = "Interventi " + locative(pl) + (pl.kind === "place" ? " e dintorni" : "") + " · Veneto e Friuli Venezia Giulia";
+      if (pl && pl.kind !== "reg") t = "Interventi " + locative(pl) + (pl.kind === "place" ? " e dintorni" : "");
       if (li.textContent !== t) li.textContent = t;
     }
   }
 
   function paint(pl) {
     paintZone(pl);
-    var text = lineText(pl);
-    var nodes = document.querySelectorAll("[data-gf-geo-avail]");
-    for (var i = 0; i < nodes.length; i++) {
-      var el = nodes[i];
-      if (!text) {
-        el.hidden = true;
-        el.textContent = "";
-      } else {
-        el.hidden = false;
-        if (el.textContent !== text) el.textContent = text;
-      }
-    }
   }
 
   var p = params();
@@ -214,9 +197,10 @@
   }
 
   function boostTile(problem) {
-    if (!problem) return;
+    var matched = "";
+    if (!problem) return matched;
     var want = stems(problem);
-    if (!want.length) return;
+    if (!want.length) return matched;
     var grids = document.querySelectorAll(".idra-grid");
     for (var g = 0; g < grids.length; g++) {
       var grid = grids[g];
@@ -241,10 +225,15 @@
       if (!best || bestScore < 2) continue;
       for (var h = 0; h < tiles.length; h++) tiles[h].classList.remove("idra-tile--hot");
       best.classList.add("idra-tile--hot");
+      if (!matched) {
+        var mt = best.querySelector("strong");
+        matched = mt ? mt.textContent.trim().toLowerCase() : "";
+      }
       grid.insertBefore(best, grid.firstElementChild);
       var nums = grid.querySelectorAll(".idra-tile__k");
       for (var n = 0; n < nums.length; n++) nums[n].textContent = (n < 9 ? "0" : "") + (n + 1);
     }
+    return matched;
   }
 
   function stickyCity(city) {
@@ -261,10 +250,11 @@
     }
   }
 
+  /* problem = title of the tile that matched the search (our own wording), never the raw keyword */
   function prefillWhatsApp(city, problem) {
     if (!city && !problem) return;
     var msg = "Ciao" + (city && !REGIONS[city] ? ", sono a " + city : "") + "." +
-      (problem ? " Ho bisogno di: " + problem + "." : " Ho un'urgenza in casa.") + " Potete aiutarmi?";
+      (problem ? " Ho questo problema: " + problem + "." : " Ho un'urgenza.") + " Potete aiutarmi?";
     var links = document.querySelectorAll('a[href*="wa.me/' + WA_NUM + '"]');
     for (var i = 0; i < links.length; i++) {
       links[i].setAttribute("href", "https://wa.me/" + WA_NUM + "?text=" + encodeURIComponent(msg));
@@ -277,19 +267,15 @@
     enhanced = true;
     var city = window.__gfGeoCity || "";
     var problem = searchedProblem();
-    try { boostTile(problem); } catch (e) {}
+    var shown = "";
+    try { shown = boostTile(problem); } catch (e) {}
     try { stickyCity(city); } catch (e) {}
-    try { prefillWhatsApp(city, problem); } catch (e) {}
+    try { prefillWhatsApp(city, shown); } catch (e) {}
   }
 
-  var t = 0;
   function run() {
     paint(PLACE);
     if (document.readyState !== "loading") enhance();
-  }
-  function schedule() {
-    if (t) clearTimeout(t);
-    t = setTimeout(run, 40);
   }
 
   if (document.readyState === "loading") {
@@ -301,11 +287,4 @@
     assertHook();
     run();
   }
-  var mo = new MutationObserver(schedule);
-  mo.observe(document.documentElement, { childList: true, subtree: true });
-  setTimeout(function () {
-    mo.disconnect();
-    assertHook();
-    run();
-  }, 8000);
 })();

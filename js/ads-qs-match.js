@@ -1,14 +1,21 @@
 /**
- * Ads QS message-match v10 — Google Help aligned:
- * - H1 / eyebrow / sub match keyword intent
- * - document.title + meta description match (ad ↔ page consistency)
- * Load after ads-geo.js
+ * Ads message match - v20261102lp
+ *
+ * Every page ships with its own strong static H1, title and meta description (good with no JavaScript, good for SEO).
+ * When a visit comes from an ad with a keyword and/or a known place, this script only adapts the hero:
+ *  - H1, eyebrow and lead are set once with textContent (our own sentence-case Italian copy)
+ *  - the place ("a Verona") comes from the whitelist in ads-geo.js, never from the raw keyword
+ *  - document.title and the meta description follow the hero (meta <= 155 characters)
+ * The raw search keyword is never written into the page, so nothing unverifiable or injected can show up.
+ * A rule only applies on the page it belongs to (the ad group already picks the page).
+ * Load after ads-geo.js (both deferred, in order).
  */
 (function () {
   if (window.__gfAdsQsMatch) return;
   window.__gfAdsQsMatch = true;
 
-  var VER = "20261024sos";
+  var VER = "20261102lp";
+  var PHONE = "388 809 1482";
   var lastApplied = "";
 
   function params() {
@@ -21,14 +28,30 @@
 
   function decodeVal(v) {
     if (!v) return "";
+    var out = String(v);
     try {
-      return decodeURIComponent(String(v).replace(/\+/g, " ")).trim();
-    } catch (e) {
-      return String(v).trim();
-    }
+      out = decodeURIComponent(out.replace(/\+/g, " "));
+    } catch (e) {}
+    return out.trim().slice(0, 160);
   }
 
+  /* lower case, no accents, letters and digits only: "perdita d'acqua" -> "perdita d acqua" */
+  function norm(s) {
+    var t = String(s || "").toLowerCase();
+    try { t = t.normalize("NFD"); } catch (e) {}
+    return t.replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim();
+  }
+
+  function getKeyword(p) {
+    return norm(decodeVal(p.get("utm_keyword") || p.get("utm_term") || p.get("kw")));
+  }
+
+  /* which page we are on: body[data-page], with the path as a fallback */
+  var PAGES = ["idraulico", "perdite", "ricerca", "scarichi", "caldaie", "fabbro", "serrature", "tapparelle"];
   function pageKind() {
+    var k = "";
+    try { k = (document.body && document.body.getAttribute("data-page")) || ""; } catch (e) {}
+    if (PAGES.indexOf(k) >= 0) return k;
     var path = (location.pathname || "").toLowerCase();
     if (path.indexOf("basculanti") >= 0 || path.indexOf("tapparelle") >= 0) return "tapparelle";
     if (path.indexOf("scarichi") >= 0) return "scarichi";
@@ -38,14 +61,10 @@
     if (path.indexOf("porte-serrature") >= 0) return "serrature";
     if (path.indexOf("fabbro") >= 0) return "fabbro";
     if (path.indexOf("idraulico") >= 0) return "idraulico";
-    return "idraulico";
+    return "";
   }
 
-  function getKeyword(p) {
-    return decodeVal(p.get("utm_keyword") || p.get("utm_term") || p.get("kw")).toLowerCase();
-  }
-
-  /* "a Verona" / "in provincia di Verona" — set by ads-geo.js from the whitelist only */
+  /* "a Verona" / "in provincia di Verona": set by ads-geo.js from the whitelist only */
   function cityLoc() {
     try {
       return window.__gfGeoLoc || "";
@@ -54,321 +73,321 @@
     }
   }
 
-  function T(head) {
-    return function (loc) {
-      return head + " " + loc;
-    };
-  }
-
-  /* Default copy per page (no keyword). Title = H1, sub = lead, meta = description. */
-  var BASE = {
-    idraulico: {
-      eyebrow: "Intervento idraulico · Pronto intervento · H24",
-      title: "Intervento Idraulico Urgente H24",
-      titleCity: T("Intervento Idraulico Urgente"),
-      sub: "Perdite · tubo rotto · scarichi otturati · WC intasato",
-      meta: "Intervento idraulico urgente H24 in Veneto e Friuli Venezia Giulia: perdite, tubo rotto, scarichi e WC intasato. Chiama 388 809 1482.",
-    },
-    ricerca: {
-      eyebrow: "Ricerca perdite acqua · Perdite occulte",
-      title: "Ricerca Perdite Acqua Occulte",
-      titleCity: T("Ricerca Perdite Acqua"),
-      sub: "Ricerca perdita acqua nel muro o sotto il pavimento: troviamo il punto e ripariamo, aprendo solo dove serve.",
-      meta: "Ricerca perdite acqua occulte a domicilio: perdita sotto pavimento, tubo rotto nel muro, contatore che gira. Veneto e Friuli Venezia Giulia. Chiama 388 809 1482.",
-    },
-    scarichi: {
-      eyebrow: "Scarico otturato · WC intasato · Spurgo H24",
-      title: "Scarico Otturato e WC Intasato — Spurgo Urgente",
-      titleCity: T("Scarico Otturato e WC Intasato"),
-      sub: "WC intasato · lavandino otturato · spurgo e disotturazione scarichi",
-      meta: "Scarico otturato e WC intasato: spurgo e disotturazione urgente H24 in Veneto e Friuli Venezia Giulia. Chiama 388 809 1482.",
-    },
-    perdite: {
-      eyebrow: "Perdite acqua in casa · Tubo rotto · Allagamento",
-      title: "Perdite Acqua in Casa — Intervento Urgente",
-      titleCity: T("Perdite Acqua in Casa: Intervento Urgente"),
-      sub: "Tubo che perde · macchia sul soffitto · allagamento",
-      meta: "Perdite acqua in casa, tubo rotto e allagamento: pronto intervento idraulico H24. Chiama 388 809 1482.",
-    },
-    caldaie: {
-      eyebrow: "Caldaia · Scaldabagno · Pronto intervento",
-      title: "Pronto Intervento Caldaia e Scaldabagno",
-      titleCity: T("Pronto Intervento Caldaia"),
-      sub: "Caldaia in blocco, senza acqua calda o scaldabagno che perde? Chiama.",
-      meta: "Pronto intervento caldaia e scaldabagno: caldaia in blocco, niente acqua calda, perdite. Chiama 388 809 1482.",
-    },
-    serrature: {
-      eyebrow: "Fabbro · Porte e serrature · H24",
-      title: "Serratura Bloccata o Rotta? Fabbro Urgente",
-      titleCity: T("Fabbro per Serrature e Porte Blindate"),
-      sub: "Serratura rotta o bloccata · porta blindata · chiave spezzata · sostituzione serratura",
-      meta: "Fabbro urgente per serratura bloccata o rotta, porte blindate e sostituzione serrature. Veneto e Friuli Venezia Giulia. Chiama 388 809 1482.",
-    },
-    fabbro: {
-      eyebrow: "Fabbro urgente · Apertura porte · H24",
-      title: "Fabbro Urgente — Pronto Intervento H24",
-      titleCity: T("Fabbro Pronto Intervento"),
-      sub: "Apertura porte · serrature · cilindri · porte blindate",
-      meta: "Fabbro pronto intervento H24: apertura porte, serrature, cilindri e porte blindate. Chiama 388 809 1482.",
-    },
-    tapparelle: {
-      eyebrow: "Tapparelle · Serrande · Basculanti · H24",
-      title: "Riparazione Tapparelle e Basculanti Urgente",
-      titleCity: T("Riparazione Tapparelle e Basculanti"),
-      sub: "Tapparella bloccata, cinghia rotta, serranda o basculante garage? Non forzare — chiama.",
-      meta: "Riparazione tapparelle, serrande e basculanti urgente H24. Chiama 388 809 1482.",
-    },
+  /* Heading used when only the place is known: short, so that "a Verona" still fits on two lines. */
+  var CITY_H1 = {
+    idraulico: "Intervento idraulico urgente",
+    perdite: "Perdita d\u2019acqua",
+    ricerca: "Ricerca perdite d\u2019acqua",
+    scarichi: "Scarico otturato",
+    caldaie: "Caldaia in blocco",
+    fabbro: "Fabbro urgente",
+    serrature: "Serratura bloccata",
+    tapparelle: "Tapparelle bloccate"
   };
 
-  /* Keyword -> copy. Order matters: most specific first. */
-  var RULES = [
-    {
-      re: /ricerca perdit|ricerca fughe|perdit[ae] occult|perdita nascost|perdita (acqua |d acqua |di acqua )?(nel muro|sotto (il )?pavimento|sotto traccia)|tubo rotto (nel muro|sotto)|localizzazione perdit/,
-      eyebrow: "Ricerca perdite acqua · Perdite occulte",
-      title: "Ricerca Perdite Acqua Occulte",
-      titleCity: T("Ricerca Perdite Acqua Occulte"),
-      sub: "Perdita sotto il pavimento o tubo rotto nel muro? Troviamo il punto e ripariamo.",
-      meta: "Ricerca perdite acqua occulte a domicilio. Chiama 388 809 1482.",
-    },
-    {
-      re: /cinghia|molla tapparell|tapparella (rott|bloccat|non (sale|scende))|riparazione tapparell|riparare tapparell|tapparelle? rott/,
-      eyebrow: "Riparazione tapparelle · H24",
-      title: "Riparazione Tapparelle Urgente",
-      titleCity: T("Riparazione Tapparelle"),
-      sub: "Tapparella non scende o non sale, cinghia o molla tapparella rotta · intervento a domicilio",
-      meta: "Riparazione tapparelle urgente a domicilio: cinghia, molla, tapparella bloccata. Chiama 388 809 1482.",
-    },
-    {
-      re: /serrand|basculant|garage bloccat|porta garage/,
-      eyebrow: "Serrande · Basculanti garage · H24",
-      title: "Riparazione Serrande e Basculanti",
-      titleCity: T("Riparazione Serrande e Basculanti"),
-      sub: "Serranda o basculante garage bloccata · intervento urgente",
-      meta: "Riparazione serrande e basculanti garage urgente. Chiama 388 809 1482.",
-    },
-    {
-      re: /tapparell/,
-      eyebrow: "Tapparelle · H24",
-      title: "Tapparelle: Riparazione Urgente",
-      titleCity: T("Riparazione Tapparelle"),
-      sub: "Tapparella bloccata · cinghia o molla rotta · intervento a domicilio",
-      meta: "Tapparelle bloccate o rotte: riparazione urgente. Chiama 388 809 1482.",
-    },
-    {
-      re: /wc intas|wc ottur|water ottur|water non scarica|disintasare wc|water intas|pronto intervento wc|gabinetto intas/,
-      eyebrow: "WC intasato · Spurgo urgente · H24",
-      title: "WC Intasato — Spurgo Urgente H24",
-      titleCity: T("WC Intasato: Intervento Urgente"),
-      sub: "WC intasato · water otturato · spurgo professionale",
-      meta: "WC intasato urgente: spurgo professionale H24. Chiama 388 809 1482.",
-    },
-    {
-      re: /scarico ottur|scarichi ottur|scarico intas|scarico bloccat|scarico cucina|spurgo|sturare|stasatura|disottur|disostru|lavandino ottur|lavandino cucina|lavandino intas|stappare lavandino|fogna ottur|ingorg|otturazione|tubo intasato|tubo di scarico/,
-      eyebrow: "Scarico otturato · Spurgo · H24",
-      title: "Scarico Otturato — Spurgo Urgente",
-      titleCity: T("Scarico Otturato: Spurgo Urgente"),
-      sub: "Scarico otturato · lavandino intasato · spurgo e disotturazione",
-      meta: "Scarico otturato e lavandino intasato: spurgo urgente. Chiama 388 809 1482.",
-    },
-    {
-      re: /caldai|scaldabagn|boiler|acqua calda/,
-      eyebrow: "Caldaia · Scaldabagno · Pronto intervento",
-      title: "Pronto Intervento Caldaia e Scaldabagno",
-      titleCity: T("Pronto Intervento Caldaia"),
-      sub: "Caldaia in blocco · niente acqua calda · scaldabagno che perde",
-      meta: "Pronto intervento caldaia e scaldabagno. Chiama 388 809 1482.",
-    },
-    {
-      re: /perdit[ae] acqua|perdite d acqua|allagament|tubo rotto|tubo scoppiat|tubo che perde|acqua che esce|acqua che perde|acqua dal soffitto|riparazione perdit|perdita tubo|tubatur|perdita urgente|emergenza perdit|pronto intervento perdit/,
-      eyebrow: "Perdite acqua · Tubo rotto · H24",
-      title: "Perdite d'Acqua — Intervento Urgente",
-      titleCity: T("Perdite d'Acqua: Intervento Urgente"),
-      sub: "Tubo che perde · acqua dal soffitto · allagamento",
-      meta: "Perdite d'acqua e allagamento: intervento urgente H24. Chiama 388 809 1482.",
-    },
-    {
-      re: /riparazion[ei] (della )?port[ae] blindat|riparare port[ae] blindat/,
-      eyebrow: "Porte blindate · Riparazione · H24",
-      title: "Riparazione Porta Blindata — Fabbro",
-      titleCity: T("Riparazione Porta Blindata"),
-      sub: "Porta blindata bloccata · serratura o cilindro da sostituire · apertura e riparazione",
-      meta: "Riparazione porta blindata: apertura, sostituzione serratura e cilindro. Chiama 388 809 1482.",
-    },
-    {
-      re: /sostituzion[ei] (della )?serratur|cambio (della )?serratur|cambiare (la )?serratur/,
-      eyebrow: "Sostituzione serrature · Cilindri · H24",
-      title: "Sostituzione Serratura — Fabbro Urgente",
-      titleCity: T("Sostituzione Serratura"),
-      sub: "Serratura rotta, porta normale o blindata · cambio cilindro europeo",
-      meta: "Sostituzione serratura anche su porta blindata, cambio cilindro. Chiama 388 809 1482.",
-    },
-    {
-      re: /port[ae] blindat|assistenza port/,
-      eyebrow: "Porte blindate · Serrature · H24",
-      title: "Assistenza Porte Blindate — Fabbro",
-      titleCity: T("Assistenza Porte Blindate"),
-      sub: "Porta blindata bloccata · serratura da sostituire · cilindro di sicurezza",
-      meta: "Assistenza porte blindate: apertura, serrature e cilindri. Chiama 388 809 1482.",
-    },
-    {
-      re: /cambio cilindr|sostituzione cilindr|cilindro europeo|cilindr|cambio serratur|sostituzione serratur|serratura rott|riparazione serratur/,
-      eyebrow: "Sostituzione serrature · Cilindri",
-      title: "Sostituzione e Riparazione Serrature",
-      titleCity: T("Sostituzione Serrature"),
-      sub: "Serratura rotta · cambio cilindro · porta che non chiude",
-      meta: "Sostituzione e riparazione serrature, cambio cilindro. Chiama 388 809 1482.",
-    },
-    {
-      re: /chiuso fuori|chiusi fuori|mi sono chiuso|bloccato fuori|rimasto fuori|rimasto chiuso|porta sbattuta|porta bloccata|serratura bloccat|chiave rotta|chiave spezzat|chiave bloccata|apertura port|sblocco serratur|sblocco porta|apertura serratur/,
-      eyebrow: "Apertura porte · Serratura bloccata",
-      title: "Apertura Porte Urgente — Fabbro H24",
-      titleCity: T("Apertura Porte Urgente"),
-      sub: "Chiuso fuori · serratura bloccata · chiave rotta",
-      meta: "Apertura porte e serratura bloccata: fabbro H24. Chiama 388 809 1482.",
-    },
-    {
-      re: /fabbr/,
-      eyebrow: "Fabbro urgente · Pronto intervento · H24",
-      title: "Fabbro Pronto Intervento H24",
-      titleCity: T("Fabbro Pronto Intervento"),
-      sub: "Apertura porte · serrature · cilindri · porte blindate",
-      meta: "Fabbro urgente e pronto intervento H24. Chiama 388 809 1482.",
-    },
-    {
-      re: /riparazion[ei] idraulic|riparare tub|idraulico per riparazion/,
-      eyebrow: "Riparazioni idrauliche · H24",
-      title: "Riparazioni Idrauliche Urgenti",
-      titleCity: T("Riparazioni Idrauliche Urgenti"),
-      sub: "Perdite · rubinetti · flessibili · scarichi",
-      meta: "Riparazioni idrauliche urgenti a domicilio. Chiama 388 809 1482.",
-    },
-    {
-      re: /pronto intervento idraulic|idraulico pronto intervento/,
-      eyebrow: "Pronto intervento idraulico · H24",
-      title: "Pronto Intervento Idraulico H24",
-      titleCity: T("Pronto Intervento Idraulico"),
-      sub: "Intervento idraulico · perdite · scarichi",
-      meta: "Pronto intervento idraulico H24 in zona. Chiama 388 809 1482.",
-    },
-    {
-      re: /intervento idraulic|interventi idraulic/,
-      eyebrow: "Intervento idraulico · H24",
-      title: "Intervento Idraulico Urgente H24",
-      titleCity: T("Intervento Idraulico Urgente"),
-      sub: "Perdite · tubo rotto · scarichi otturati · WC intasato",
-      meta: "Intervento idraulico urgente H24 in zona. Chiama 388 809 1482.",
-    },
-    {
-      re: /idraulic/,
-      eyebrow: "Idraulico urgente · H24",
-      title: "Idraulico Urgente H24",
-      titleCity: T("Idraulico Urgente H24"),
-      sub: "Idraulico urgente · pronto intervento",
-      meta: "Idraulico urgente H24: rispondiamo subito. Chiama 388 809 1482.",
-    },
-  ];
-
-  /* A rule may only re-title a page of the same family (no fabbro H1 on the idraulico page). */
-  var FAMILY = { idraulico: "idr", ricerca: "idr", scarichi: "idr", perdite: "idr", caldaie: "idr", fabbro: "fab", serrature: "fab", tapparelle: "tap" };
-  function ruleFamily(r) {
-    var t = r.title.toLowerCase();
-    if (/fabbro|serratur|porte|apertura/.test(t)) return "fab";
-    if (/tapparell|serrand|basculant/.test(t)) return "tap";
-    return "idr";
-  }
-  function fits(kind, r) {
-    var f = FAMILY[kind] || "idr";
-    var rf = ruleFamily(r);
-    if (f === rf) return true;
-    /* the fabbro page also lists tapparelle/serrande */
-    return f === "fab" && rf === "tap";
-  }
-
-  function pickCopy(kind, kw) {
-    var base = BASE[kind] || BASE.idraulico;
-    var pack = {
-      eyebrow: base.eyebrow,
-      title: base.title,
-      titleCity: base.titleCity,
-      sub: base.sub,
-      meta: base.meta,
-    };
-    /* service pages keep their own service unless the keyword is clearly for it */
-    if (kw) {
-      for (var i = 0; i < RULES.length; i++) {
-        if (!fits(kind, RULES[i])) continue;
-        if (RULES[i].re.test(kw)) {
-          pack.eyebrow = RULES[i].eyebrow;
-          pack.title = RULES[i].title;
-          pack.titleCity = RULES[i].titleCity || pack.titleCity;
-          pack.sub = RULES[i].sub;
-          pack.meta = RULES[i].meta || pack.meta;
-          break;
-        }
+  /* Keyword -> copy. Per page, most specific first. Regexes work on norm() text (no accents, no punctuation).
+     No claim about opening hours, prices or response times anywhere in this copy. */
+  var RULES = {
+    idraulico: [
+      {
+        re: /riparazion[ei] idraulic|riparare (un )?tub|idraulico per riparazion/,
+        title: "Riparazioni idrauliche urgenti",
+        eyebrow: "Riparazioni idrauliche",
+        sub: "Perdite, rubinetti, flessibili e scarichi. Dicci cosa \u00e8 successo e dove sei.",
+        meta: "Riparazioni idrauliche urgenti a domicilio: perdite, rubinetti, flessibili, scarichi. Chiama o scrivi su WhatsApp: " + PHONE + "."
+      },
+      {
+        re: /pronto intervento|emergenza|urgent/,
+        title: "Idraulico pronto intervento",
+        eyebrow: "Idraulico, pronto intervento",
+        sub: "Perdita, allagamento o scarico bloccato? Chiamaci: ci servono solo il problema e il comune.",
+        meta: "Idraulico pronto intervento a domicilio: perdite, allagamenti, WC e scarichi bloccati. Chiama o scrivi su WhatsApp: " + PHONE + "."
+      },
+      {
+        re: /intervento idraulic/,
+        title: "Intervento idraulico urgente",
+        eyebrow: "Idraulico, pronto intervento",
+        sub: "Perdita, allagamento o scarico bloccato? Chiamaci: ci servono solo il problema e il comune.",
+        meta: "Intervento idraulico urgente a domicilio: perdite, tubi rotti, rubinetti e scarichi. Chiama o scrivi su WhatsApp: " + PHONE + "."
+      },
+      {
+        re: /idraulic/,
+        title: "Idraulico a domicilio",
+        eyebrow: "Idraulico, pronto intervento",
+        sub: "Perdita, allagamento o scarico bloccato? Dicci cosa \u00e8 successo e dove sei.",
+        meta: "Idraulico a domicilio, vicino a te: perdite, allagamenti, WC e scarichi bloccati. Chiama o scrivi su WhatsApp: " + PHONE + "."
       }
-    }
-    return pack;
+    ],
+    perdite: [
+      {
+        re: /allagament/,
+        title: "Allagamento in casa",
+        eyebrow: "Allagamenti",
+        sub: "Acqua sul pavimento? Chiudi il contatore, se riesci, e chiamaci.",
+        meta: "Allagamento in casa? Idraulico urgente a domicilio, vicino a te. Chiudi l\u2019acqua e chiama il " + PHONE + " o scrivi su WhatsApp."
+      },
+      {
+        re: /tubo (rotto|scoppiat|che perde)|tubatur|flessibil/,
+        title: "Tubo rotto o che perde",
+        eyebrow: "Tubi e flessibili",
+        sub: "Tubo, raccordo o flessibile che perde. Chiudi l\u2019acqua e dicci dove sei.",
+        meta: "Tubo rotto o che perde? Idraulico a domicilio, vicino a te. Chiudi l\u2019acqua e chiama il " + PHONE + " o scrivi su WhatsApp."
+      },
+      {
+        re: /soffitto/,
+        title: "Acqua dal soffitto",
+        eyebrow: "Perdite dall\u2019alto",
+        sub: "Macchia che si allarga o gocce dal soffitto? Dicci da quanto succede.",
+        meta: "Acqua dal soffitto in casa? Cerchiamo la causa e ripariamo. Idraulico a domicilio in Chiama il " + PHONE + "."
+      },
+      {
+        re: /perdit|acqua|idraulic/,
+        title: "Perdita d\u2019acqua in casa",
+        eyebrow: "Perdite d\u2019acqua e allagamenti",
+        sub: "Tubo che perde, acqua dal soffitto o allagamento. Chiudi l\u2019acqua e chiamaci.",
+        meta: "Tubo che perde, acqua dal soffitto, allagamento? Idraulico urgente a domicilio in Chiama o scrivi su WhatsApp: " + PHONE + "."
+      }
+    ],
+    ricerca: [
+      {
+        re: /pavimento/,
+        title: "Perdita sotto il pavimento",
+        eyebrow: "Ricerca perdite",
+        sub: "Piastrelle umide o contatore che gira? Cerchiamo il punto prima di rompere.",
+        meta: "Perdita d\u2019acqua sotto il pavimento? Cerchiamo il punto e apriamo solo dove serve. Chiama il " + PHONE + "."
+      },
+      {
+        re: /muro|parete|sotto traccia/,
+        title: "Perdita d\u2019acqua nel muro",
+        eyebrow: "Ricerca perdite",
+        sub: "Macchia sul muro o rumore d\u2019acqua? Troviamo il tratto rotto e apriamo solo l\u00ec.",
+        meta: "Perdita d\u2019acqua nel muro? Cerchiamo il tratto di tubo rotto e apriamo solo dove serve. Chiama il " + PHONE + "."
+      },
+      {
+        re: /perdit|fughe|occult|nascost|contatore/,
+        title: "Ricerca perdite d\u2019acqua occulte",
+        eyebrow: "Ricerca perdite",
+        sub: "Perdita nel muro o sotto il pavimento? Cerchiamo il punto e apriamo solo dove serve.",
+        meta: "Perdita nel muro, sotto il pavimento o contatore che gira? Cerchiamo il punto e apriamo solo dove serve. Chiama il " + PHONE + "."
+      }
+    ],
+    scarichi: [
+      {
+        re: /\bwc\b|water|gabinetto/,
+        title: "WC intasato o che non scarica",
+        eyebrow: "WC intasato",
+        sub: "L\u2019acqua sale o non scende? Non tirare lo sciacquone e chiamaci.",
+        meta: "WC intasato o che non scarica? Idraulico a domicilio in Chiama o scrivi su WhatsApp: " + PHONE + "."
+      },
+      {
+        re: /lavandino|lavello|cucina|doccia|piletta|sifone/,
+        title: "Lavandino o doccia che non scaricano",
+        eyebrow: "Scarichi lenti o bloccati",
+        sub: "Acqua ferma o scarico lento? Dicci quale scarico e da quanto.",
+        meta: "Lavandino o doccia che non scaricano? Sturatura e spurgo a domicilio in Chiama il " + PHONE + "."
+      },
+      {
+        re: /spurgo|stur|stasatur|disostru|disottur|ottur|intas|bloccat|ingorg/,
+        title: "Sturatura e spurgo scarichi",
+        eyebrow: "Scarichi otturati",
+        sub: "Scarico bloccato o che gorgoglia? Dicci cosa non scende e da quanto.",
+        meta: "Sturatura e spurgo di scarichi otturati a domicilio in Chiama o scrivi su WhatsApp: " + PHONE + "."
+      }
+    ],
+    caldaie: [
+      {
+        re: /scaldabagn|boiler/,
+        title: "Scaldabagno senza acqua calda",
+        eyebrow: "Scaldabagno",
+        sub: "Niente acqua calda o perdita dal boiler? Dicci marca e modello.",
+        meta: "Scaldabagno senza acqua calda o che perde? Dicci marca e problema: ti diciamo se possiamo intervenire. Chiama il " + PHONE + "."
+      },
+      {
+        re: /acqua calda/,
+        title: "Niente acqua calda?",
+        eyebrow: "Caldaia e scaldabagno",
+        sub: "Esce solo acqua fredda o tiepida? Dicci marca e codice errore, se compare.",
+        meta: "Senza acqua calda? Dicci marca e problema di caldaia o scaldabagno: ti diciamo se possiamo intervenire. Chiama il " + PHONE + "."
+      },
+      {
+        re: /caldai/,
+        title: "Caldaia in blocco o senza acqua calda",
+        eyebrow: "Caldaia e scaldabagno",
+        sub: "Caldaia che non parte o scaldabagno che perde? Dicci marca e codice errore, se compare.",
+        meta: "Caldaia in blocco, scaldabagno senza acqua calda o che perde? Dicci marca e problema: ti diciamo se possiamo intervenire. Chiama il " + PHONE + "."
+      }
+    ],
+    fabbro: [
+      {
+        re: /cilindr/,
+        title: "Cambio cilindro urgente",
+        eyebrow: "Serrature e cilindri",
+        sub: "Cilindro rotto, chiavi perse o serratura che gira a vuoto? Dicci che porta hai.",
+        meta: "Cambio cilindro urgente: serratura che gira a vuoto o chiavi perse. Fabbro a domicilio in Chiama il " + PHONE + "."
+      },
+      {
+        re: /blindat/,
+        title: "Porta blindata bloccata",
+        eyebrow: "Porte blindate",
+        sub: "Blindata che non si apre o non chiude bene? Dicci marca e tipo, se li conosci.",
+        meta: "Porta blindata bloccata o da riparare? Fabbro a domicilio in Chiama o scrivi su WhatsApp: " + PHONE + "."
+      },
+      {
+        re: /chiuso fuori|chiusi fuori|apertura|aprire|sblocc|sbattut|bloccat/,
+        title: "Fabbro per apertura porte",
+        eyebrow: "Apertura porte",
+        sub: "Chiuso fuori o porta bloccata? Apriamo senza rompere la porta, quando si pu\u00f2.",
+        meta: "Chiuso fuori casa o porta bloccata? Fabbro a domicilio in Chiama o scrivi su WhatsApp: " + PHONE + "."
+      },
+      {
+        re: /fabbr/,
+        title: "Fabbro pronto intervento",
+        eyebrow: "Fabbro, pronto intervento",
+        sub: "Chiuso fuori, serratura bloccata o chiave spezzata. Chiamaci e dicci dove sei.",
+        meta: "Fabbro a domicilio: chiuso fuori, serratura bloccata, chiave spezzata. Chiama o scrivi su WhatsApp: " + PHONE + "."
+      }
+    ],
+    serrature: [
+      {
+        re: /sostituzion|cambio|cambiare|cambiamento/,
+        title: "Sostituzione serratura",
+        eyebrow: "Serrature e cilindri",
+        sub: "Serratura rotta o che gira a vuoto? Cambiamo serratura o cilindro.",
+        meta: "Sostituzione serratura e cambio cilindro, anche su porta blindata. Fabbro a domicilio in Chiama il " + PHONE + "."
+      },
+      {
+        re: /blindat/,
+        title: "Riparazione porta blindata",
+        eyebrow: "Porte blindate",
+        sub: "Blindata che non si apre o non chiude bene? Dicci marca e tipo, se li conosci.",
+        meta: "Riparazione porta blindata: apertura, serratura e cilindro. Fabbro a domicilio in Chiama il " + PHONE + "."
+      },
+      {
+        re: /chiave (spezzat|rott|bloccat)/,
+        title: "Chiave spezzata nella serratura",
+        eyebrow: "Chiave spezzata",
+        sub: "Non insistere con pinze o colla. Dicci che serratura hai.",
+        meta: "Chiave spezzata nella serratura? Estraiamo il pezzo e, se serve, cambiamo il cilindro. Chiama il " + PHONE + "."
+      },
+      {
+        re: /serratur|cilindr|fabbr|porta|chiave/,
+        title: "Serratura bloccata o rotta",
+        eyebrow: "Porte e serrature",
+        sub: "Chiave che non gira, cilindro rotto o blindata che non si apre. Dicci che porta hai.",
+        meta: "Serratura bloccata, chiave spezzata o porta blindata che non si apre? Fabbro a domicilio in Chiama il " + PHONE + "."
+      }
+    ],
+    tapparelle: [
+      {
+        re: /cinghia|molla/,
+        title: "Cinghia o molla rotta",
+        eyebrow: "Tapparelle e basculanti",
+        sub: "Cinghia sfilacciata o molla scarica? Non forzare: dicci cosa succede.",
+        meta: "Cinghia o molla di tapparella o basculante rotta? Riparazione a domicilio in Chiama il " + PHONE + "."
+      },
+      {
+        re: /basculant|serrand|garage|box/,
+        title: "Basculante o serranda bloccati",
+        eyebrow: "Basculanti e serrande",
+        sub: "Garage che non si apre? Non forzare: dicci cosa succede.",
+        meta: "Basculante o serranda del garage bloccati? Riparazione a domicilio in Chiama il " + PHONE + "."
+      },
+      {
+        re: /tapparell/,
+        title: "Tapparella bloccata o rotta",
+        eyebrow: "Tapparelle",
+        sub: "Non sale, non scende o scende storta? Non forzarla: chiamaci.",
+        meta: "Tapparella che non sale o non scende? Riparazione a domicilio in Chiama o scrivi su WhatsApp: " + PHONE + "."
+      }
+    ]
+  };
+
+  function el(id) {
+    return document.getElementById(id);
   }
 
   function setText(id, text) {
-    var el = document.getElementById(id);
-    if (!el || text == null || text === "") return;
-    if (el.textContent !== text) el.textContent = text;
+    var n = el(id);
+    if (!n || !text) return;
+    if (n.textContent !== text) n.textContent = text;
   }
 
-  function setMetaDescription(text) {
-    if (!text) return;
-    var nodes = document.querySelectorAll('meta[name="description"]');
-    for (var i = 0; i < nodes.length; i++) {
-      nodes[i].setAttribute("content", text);
-    }
-    var og = document.querySelectorAll('meta[property="og:description"]');
-    for (var j = 0; j < og.length; j++) {
-      og[j].setAttribute("content", text);
-    }
+  function setMeta(sel, attr, value) {
+    if (!value) return;
+    var nodes = document.querySelectorAll(sel);
+    for (var i = 0; i < nodes.length; i++) nodes[i].setAttribute(attr, value);
   }
 
-  function setDocTitle(title) {
-    if (!title) return;
-    var t = title + " | Chiama 388 809 1482";
-    if (document.title !== t) document.title = t;
-    var ogt = document.querySelectorAll('meta[property="og:title"]');
-    for (var i = 0; i < ogt.length; i++) {
-      ogt[i].setAttribute("content", title + " — Chiama 388 809 1482");
+  function matchRule(kind, kw) {
+    var list = RULES[kind] || [];
+    if (!kw) return null;
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].re.test(kw)) return list[i];
     }
+    return null;
   }
 
   function apply() {
-    var p = params();
     var kind = pageKind();
+    if (!kind) return;
+    var p = params();
     var kw = getKeyword(p);
     var city = cityLoc();
-    /* No keyword and no known place: keep the page's own static copy (no flicker, same for SEO). */
+    /* No keyword and no known place: keep the static copy untouched (same for SEO, no flicker). */
     if (!kw && !city) return;
-    var copy = pickCopy(kind, kw);
 
-    var title = (city && copy.titleCity) ? copy.titleCity(city) : copy.title;
-    var sig = [VER, title, city || '', copy.sub, copy.eyebrow, copy.meta].join("\u0001");
+    var rule = matchRule(kind, kw);
+    var title, sub, eyebrow, meta;
+    if (rule) {
+      title = city ? rule.title.replace(/[?!]$/, "") + " " + city : rule.title;
+      sub = rule.sub;
+      eyebrow = rule.eyebrow;
+      meta = rule.meta;
+    } else if (city && CITY_H1[kind]) {
+      title = CITY_H1[kind] + " " + city;
+    } else {
+      return;
+    }
+
+    var sig = [VER, title, sub || "", eyebrow || "", meta || ""].join("\u0001");
     if (sig === lastApplied) return;
     lastApplied = sig;
 
     setText("gf-hero-title", title);
-    setText("gf-hero-sub", copy.sub);
-    setText("gf-hero-eyebrow", copy.eyebrow);
-    setDocTitle(title);
-    setMetaDescription(copy.meta);
+    setText("gf-hero-sub", sub);
+    setText("gf-hero-eyebrow", eyebrow);
+
+    var t = title + " | " + PHONE;
+    if (document.title !== t) document.title = t;
+    setMeta('meta[property="og:title"]', "content", title + " | Sos Interventi");
+    if (meta && meta.length <= 155) {
+      setMeta('meta[name="description"]', "content", meta);
+      setMeta('meta[property="og:description"]', "content", meta);
+    }
 
     try {
       document.documentElement.setAttribute("data-gf-qs-ver", VER);
-      if (kw) document.documentElement.setAttribute("data-gf-kw-match", "1");
+      if (kw) document.documentElement.setAttribute("data-gf-kw-match", rule ? "1" : "0");
       if (city) document.documentElement.setAttribute("data-gf-city", city);
     } catch (e) {}
   }
 
   window.gfApplyAdsQsHero = apply;
+  window.__gfQsRules = RULES;
+
+  /* The head script hides the hero copy for ad visits (class qs-pending) so the text never jumps: show it now. */
+  function ready() {
+    try {
+      document.documentElement.classList.remove("qs-pending");
+    } catch (e) {}
+  }
 
   function boot() {
-    apply();
+    try {
+      apply();
+    } finally {
+      ready();
+    }
   }
 
   if (document.readyState === "loading") {
@@ -376,22 +395,8 @@
   } else {
     boot();
   }
-
-  var delays = [50, 400, 1200, 3000];
-  for (var d = 0; d < delays.length; d++) {
-    setTimeout(apply, delays[d]);
-  }
-
-  var moTimer = 0;
-  try {
-    var mo = new MutationObserver(function () {
-      if (moTimer) clearTimeout(moTimer);
-      moTimer = setTimeout(apply, 60);
-    });
-    mo.observe(document.documentElement, { childList: true, subtree: true });
-    setTimeout(function () {
-      mo.disconnect();
-      if (moTimer) clearTimeout(moTimer);
-    }, 10000);
-  } catch (e) {}
+  /* second pass only if the place arrived late; guarded by the signature, so it never repeats the same write */
+  window.addEventListener("load", function () {
+    apply();
+  });
 })();

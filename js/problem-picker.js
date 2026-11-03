@@ -45,7 +45,7 @@
     if (note) {
       note.textContent = has
         ? ""
-        : "Seleziona un problema per attivare WhatsApp — oppure chiama subito.";
+        : "Seleziona un problema per attivare WhatsApp, oppure chiama subito.";
       note.hidden = !note.textContent;
     }
   }
