@@ -1,5 +1,5 @@
 /**
- * Ads message match - v20261102lp
+ * Ads message match - v20261103qs
  *
  * Every page ships with its own strong static H1, title and meta description (good with no JavaScript, good for SEO).
  * When a visit comes from an ad with a keyword and/or a known place, this script only adapts the hero:
@@ -14,7 +14,7 @@
   if (window.__gfAdsQsMatch) return;
   window.__gfAdsQsMatch = true;
 
-  var VER = "20261102lp";
+  var VER = "20261103qs";
   var PHONE = "388 809 1482";
   var lastApplied = "";
 
@@ -138,14 +138,14 @@
         title: "Acqua dal soffitto",
         eyebrow: "Perdite dall\u2019alto",
         sub: "Macchia che si allarga o gocce dal soffitto? Dicci da quanto succede.",
-        meta: "Acqua dal soffitto in casa? Cerchiamo la causa e ripariamo. Idraulico a domicilio in Chiama il " + PHONE + "."
+        meta: "Acqua dal soffitto in casa? Cerchiamo la causa e ripariamo. Idraulico a domicilio. Chiama il " + PHONE + "."
       },
       {
         re: /perdit|acqua|idraulic/,
         title: "Perdita d\u2019acqua in casa",
         eyebrow: "Perdite d\u2019acqua e allagamenti",
         sub: "Tubo che perde, acqua dal soffitto o allagamento. Chiudi l\u2019acqua e chiamaci.",
-        meta: "Tubo che perde, acqua dal soffitto, allagamento? Idraulico urgente a domicilio in Chiama o scrivi su WhatsApp: " + PHONE + "."
+        meta: "Tubo che perde, acqua dal soffitto, allagamento? Idraulico urgente a domicilio. Chiama o scrivi su WhatsApp: " + PHONE + "."
       }
     ],
     ricerca: [
@@ -177,21 +177,21 @@
         title: "WC intasato o che non scarica",
         eyebrow: "WC intasato",
         sub: "L\u2019acqua sale o non scende? Non tirare lo sciacquone e chiamaci.",
-        meta: "WC intasato o che non scarica? Idraulico a domicilio in Chiama o scrivi su WhatsApp: " + PHONE + "."
+        meta: "WC intasato o che non scarica? Idraulico a domicilio. Chiama o scrivi su WhatsApp: " + PHONE + "."
       },
       {
         re: /lavandino|lavello|cucina|doccia|piletta|sifone/,
         title: "Lavandino o doccia che non scaricano",
         eyebrow: "Scarichi lenti o bloccati",
         sub: "Acqua ferma o scarico lento? Dicci quale scarico e da quanto.",
-        meta: "Lavandino o doccia che non scaricano? Sturatura e spurgo a domicilio in Chiama il " + PHONE + "."
+        meta: "Lavandino o doccia che non scaricano? Sturatura e spurgo a domicilio. Chiama il " + PHONE + "."
       },
       {
         re: /spurgo|stur|stasatur|disostru|disottur|ottur|intas|bloccat|ingorg/,
         title: "Sturatura e spurgo scarichi",
         eyebrow: "Scarichi otturati",
         sub: "Scarico bloccato o che gorgoglia? Dicci cosa non scende e da quanto.",
-        meta: "Sturatura e spurgo di scarichi otturati a domicilio in Chiama o scrivi su WhatsApp: " + PHONE + "."
+        meta: "Sturatura e spurgo di scarichi otturati a domicilio. Chiama o scrivi su WhatsApp: " + PHONE + "."
       }
     ],
     caldaie: [
@@ -223,21 +223,21 @@
         title: "Cambio cilindro urgente",
         eyebrow: "Serrature e cilindri",
         sub: "Cilindro rotto, chiavi perse o serratura che gira a vuoto? Dicci che porta hai.",
-        meta: "Cambio cilindro urgente: serratura che gira a vuoto o chiavi perse. Fabbro a domicilio in Chiama il " + PHONE + "."
+        meta: "Cambio cilindro urgente: serratura che gira a vuoto o chiavi perse. Fabbro a domicilio. Chiama il " + PHONE + "."
       },
       {
         re: /blindat/,
         title: "Porta blindata bloccata",
         eyebrow: "Porte blindate",
         sub: "Blindata che non si apre o non chiude bene? Dicci marca e tipo, se li conosci.",
-        meta: "Porta blindata bloccata o da riparare? Fabbro a domicilio in Chiama o scrivi su WhatsApp: " + PHONE + "."
+        meta: "Porta blindata bloccata o da riparare? Fabbro a domicilio. Chiama o scrivi su WhatsApp: " + PHONE + "."
       },
       {
         re: /chiuso fuori|chiusi fuori|apertura|aprire|sblocc|sbattut|bloccat/,
         title: "Fabbro per apertura porte",
         eyebrow: "Apertura porte",
         sub: "Chiuso fuori o porta bloccata? Apriamo senza rompere la porta, quando si pu\u00f2.",
-        meta: "Chiuso fuori casa o porta bloccata? Fabbro a domicilio in Chiama o scrivi su WhatsApp: " + PHONE + "."
+        meta: "Chiuso fuori casa o porta bloccata? Fabbro a domicilio. Chiama o scrivi su WhatsApp: " + PHONE + "."
       },
       {
         re: /fabbr/,
@@ -253,14 +253,14 @@
         title: "Sostituzione serratura",
         eyebrow: "Serrature e cilindri",
         sub: "Serratura rotta o che gira a vuoto? Cambiamo serratura o cilindro.",
-        meta: "Sostituzione serratura e cambio cilindro, anche su porta blindata. Fabbro a domicilio in Chiama il " + PHONE + "."
+        meta: "Sostituzione serratura e cambio cilindro, anche su porta blindata. Fabbro a domicilio. Chiama il " + PHONE + "."
       },
       {
         re: /blindat/,
         title: "Riparazione porta blindata",
         eyebrow: "Porte blindate",
         sub: "Blindata che non si apre o non chiude bene? Dicci marca e tipo, se li conosci.",
-        meta: "Riparazione porta blindata: apertura, serratura e cilindro. Fabbro a domicilio in Chiama il " + PHONE + "."
+        meta: "Riparazione porta blindata: apertura, serratura e cilindro. Fabbro a domicilio. Chiama il " + PHONE + "."
       },
       {
         re: /chiave (spezzat|rott|bloccat)/,
@@ -274,7 +274,7 @@
         title: "Serratura bloccata o rotta",
         eyebrow: "Porte e serrature",
         sub: "Chiave che non gira, cilindro rotto o blindata che non si apre. Dicci che porta hai.",
-        meta: "Serratura bloccata, chiave spezzata o porta blindata che non si apre? Fabbro a domicilio in Chiama il " + PHONE + "."
+        meta: "Serratura bloccata, chiave spezzata o porta blindata che non si apre? Fabbro a domicilio. Chiama il " + PHONE + "."
       }
     ],
     tapparelle: [
@@ -283,21 +283,21 @@
         title: "Cinghia o molla rotta",
         eyebrow: "Tapparelle e basculanti",
         sub: "Cinghia sfilacciata o molla scarica? Non forzare: dicci cosa succede.",
-        meta: "Cinghia o molla di tapparella o basculante rotta? Riparazione a domicilio in Chiama il " + PHONE + "."
+        meta: "Cinghia o molla di tapparella o basculante rotta? Riparazione a domicilio. Chiama il " + PHONE + "."
       },
       {
         re: /basculant|serrand|garage|box/,
         title: "Basculante o serranda bloccati",
         eyebrow: "Basculanti e serrande",
         sub: "Garage che non si apre? Non forzare: dicci cosa succede.",
-        meta: "Basculante o serranda del garage bloccati? Riparazione a domicilio in Chiama il " + PHONE + "."
+        meta: "Basculante o serranda del garage bloccati? Riparazione a domicilio. Chiama il " + PHONE + "."
       },
       {
         re: /tapparell/,
         title: "Tapparella bloccata o rotta",
         eyebrow: "Tapparelle",
         sub: "Non sale, non scende o scende storta? Non forzarla: chiamaci.",
-        meta: "Tapparella che non sale o non scende? Riparazione a domicilio in Chiama o scrivi su WhatsApp: " + PHONE + "."
+        meta: "Tapparella che non sale o non scende? Riparazione a domicilio. Chiama o scrivi su WhatsApp: " + PHONE + "."
       }
     ]
   };
