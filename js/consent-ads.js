@@ -510,9 +510,9 @@
   armAntiFlicker();
   bootstrapAdsConsentEarly();
   loadGtag();
-  var earlyChoice = readChoice();
-  if (earlyChoice === "granted") applyConsent(true);
-  else if (earlyChoice === "denied") applyConsent(false);
+  /* 04/11/2026: loadGtag() applica già il consenso "granted": niente seconda
+     chiamata, altrimenti GA4 e AW venivano configurati due volte. */
+  if (readChoice() === "denied") applyConsent(false);
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", function () {

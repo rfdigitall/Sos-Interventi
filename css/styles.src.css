@@ -771,38 +771,6 @@ a:hover { color: var(--rust-deep); }
   padding-top: .35rem !important;
 }
 
-.idra-flash {
-  background: var(--rust);
-  color: #fff;
-  overflow: hidden;
-  padding: .85rem 0;
-  border-top: 1px solid rgba(0,0,0,.12);
-  border-bottom: 1px solid rgba(0,0,0,.12);
-}
-
-.idra-flash__track {
-  display: flex;
-  gap: 1.25rem;
-  width: max-content;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.05rem;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  animation: idra-marquee 28s linear infinite;
-  white-space: nowrap;
-  padding-left: 1rem;
-}
-
-@keyframes idra-marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .idra-flash__track { animation: none; flex-wrap: wrap; width: auto; justify-content: center; }
-}
-
 .idra-problems {
   padding: 3.5rem 0 3rem;
   background:
@@ -1498,27 +1466,6 @@ a:hover { color: var(--rust-deep); }
 }
 
 .home-hero__wa:hover { color: #fff; }
-
-.home-flash {
-  background: var(--rust);
-  color: #fff;
-  overflow: hidden;
-  padding: .85rem 0;
-}
-
-.home-flash__track {
-  display: flex;
-  gap: 1.25rem;
-  width: max-content;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.05rem;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  animation: idra-marquee 26s linear infinite;
-  white-space: nowrap;
-  padding-left: 1rem;
-}
 
 .home-wide {
   max-width: 72rem;
