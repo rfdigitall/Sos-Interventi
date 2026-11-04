@@ -54,4 +54,27 @@
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
+
+  <url><loc>https://sos-interventi.it/idraulico/venezia/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/idraulico/mestre/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/idraulico/padova/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/idraulico/verona/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/idraulico/treviso/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/idraulico/vicenza/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/idraulico/udine/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/idraulico/trieste/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/idraulico/pordenone/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/idraulico/rovigo/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/idraulico/belluno/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/fabbro/venezia/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/fabbro/mestre/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/fabbro/padova/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/fabbro/verona/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/fabbro/treviso/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/fabbro/vicenza/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/fabbro/udine/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/fabbro/trieste/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/fabbro/pordenone/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/fabbro/rovigo/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sos-interventi.it/fabbro/belluno/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>

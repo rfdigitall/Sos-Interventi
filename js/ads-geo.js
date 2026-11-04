@@ -93,6 +93,11 @@
   }
 
   function pickPlace(p) {
+    /* pagine città (/idraulico/venezia/ ecc.): la città della pagina vince sempre */
+    try {
+      var fixed = document.querySelector('meta[name="gf-city"]');
+      if (fixed && fixed.content) return { name: fixed.content, kind: "place" };
+    } catch (e) {}
     var interest = fromIdOrName(p.get("area"));
     var physical = fromIdOrName(p.get("city") || p.get("citta"));
     var kw = fromKeyword(p.get("utm_keyword") || p.get("utm_term") || p.get("kw"));
