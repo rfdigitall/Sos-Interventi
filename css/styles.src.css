@@ -615,11 +615,9 @@ a:hover { color: var(--rust-deep); }
   pointer-events: none;
   width: min(96vw, 480px);
   opacity: .34;
-  animation: sos-hero-float 7s ease-in-out infinite;
-  will-change: transform;
 }
 
-.idra-hero__visual img {
+.idra-hero__visual canvas {
   width: 100%;
   height: auto;
   display: block;
@@ -633,6 +631,8 @@ a:hover { color: var(--rust-deep); }
   .idra-hero__visual {
     width: min(52vw, 440px);
     opacity: .22;
+    animation: sos-hero-float 7s ease-in-out infinite;
+    will-change: transform;
   }
 }
 
@@ -1851,7 +1851,7 @@ a:hover { color: var(--rust-deep); }
   will-change: transform, opacity;
 }
 
-.home-hero__logo img {
+.home-hero__logo canvas {
   width: 100%;
   height: auto;
   display: block;
