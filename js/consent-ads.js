@@ -13,6 +13,9 @@
  * 24/10/2026: forceMarketingConsentForAds=false (GDPR). Default denied fino ad Accetta;
  * il banner non copre più il pulsante Chiama su mobile.
  * 26/10/2026: numero chiamata + WhatsApp passato a 388 809 1482 (test, ok cliente).
+ * 18/11/2026: forceMarketingConsentForAds=true di nuovo (con il solo "Accetta" quasi nessuna
+ * conversione arrivava a Google Ads, vedi gclid=0 nei ping G100). Ogni link tel: conta come
+ * "Click tel" (tile e link nel testo compresi), 1 conversione per sessione.
  * Per riattivare DNI: rimetti phoneConversionSendTo sotto + ricrea WEBSITE_CALL.
  */
 (function () {
@@ -27,9 +30,10 @@
     phoneDigits: "3888091482",
     ga4Id: "G-N643STDFRS",
     storageKey: "sos_consent_v2",
-    /* 24/10/2026: false. Nessun consenso automatico per il traffico Ads:
-       Consent Mode v2 resta "denied" finché il visitatore non clicca Accetta. */
-    forceMarketingConsentForAds: false,
+    /* 18/11/2026: true. Il traffico Ads (gclid / gbraid / wbraid / utm_source=google) ottiene
+       subito il consenso marketing, così le conversioni arrivano a Google Ads con il gclid.
+       Chi ha cliccato Rifiuta resta "denied". Senza gclid: default "denied" fino ad Accetta. */
+    forceMarketingConsentForAds: true,
     /* Consent Mode v2 "advanced": senza consenso il click su Chiama invia a Google
        solo un ping anonimo senza cookie (conversione modellata). Metti false per
        non inviare nulla prima del consenso ("basic"). */
@@ -91,7 +95,8 @@
   }
 
   function canTrackMarketing() {
-    return hasAnalyticsConsent() || (CONFIG.forceMarketingConsentForAds && isAdsTraffic());
+    /* chi ha cliccato Rifiuta resta "denied" anche se arriva da un annuncio */
+    return hasAnalyticsConsent() || (CONFIG.forceMarketingConsentForAds && isAdsTraffic() && readChoice() !== "denied");
   }
 
   function log() {
@@ -221,7 +226,7 @@
     if (!CONFIG.forceMarketingConsentForAds || !isAdsTraffic()) return;
     if (readChoice() === "denied") return;
     saveChoice("granted");
-    applyConsent(true);
+    /* applyConsent(true) lo chiama loadGtag() subito dopo gtag("js"): niente doppia config */
     if (document.body) document.body.classList.add("ads-traffic");
     else
       document.addEventListener(
@@ -396,17 +401,13 @@
 
     var a = ev.target && ev.target.closest ? ev.target.closest('a[href^="tel:"]') : null;
     if (!isOurTelLink(a)) return;
-    /* 25/10/2026: problem tiles dial directly (1 tap). They open the dialer but are NOT
-       counted as a conversion (casual taps used to inflate "Click tel"). */
-    if (a.classList && a.classList.contains("idra-tile")) {
+    /* 18/11/2026: ogni link tel: conta come "Click tel" (CTA, tile dei problemi, link nel testo e
+       nelle FAQ). Solo CTA e tile aprono il dialer con forceNativeDial (WebView di Google App);
+       gli altri link seguono il comportamento normale del browser. */
+    if (isExplicitCallCta(a) || (a.classList && a.classList.contains("idra-tile"))) {
+      /* Sempre, anche se la sessione è già stata tracciata. */
       forceNativeDial(a, ev, true);
-      return;
     }
-    /* Only the real call buttons count as conversion. */
-    if (!isExplicitCallCta(a)) return;
-
-    /* Always force dial on explicit CTA — even if we already tracked this session. */
-    forceNativeDial(a, ev);
 
     if (sessionAlreadyTracked(TEL_TRACK_KEY)) return;
 
